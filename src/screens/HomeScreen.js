@@ -6,11 +6,11 @@ const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ route, navigation }) => {
   const { nombreUsuario } = route.params || { nombreUsuario: 'Invitado' };
-  const estaLogueado = nombreUsuario !== 'Invitado';
+  const Logueado = nombreUsuario !== 'Invitado';
   const [menuAbierto, establecerMenuAbierto] = useState(false);
 
   const manejarPerfil = () => {
-    if (estaLogueado) {
+    if (Logueado) {
       navigation.navigate('Perfil', { nombreUsuario });
     } else {
       navigation.navigate('Ingreso');
@@ -18,70 +18,68 @@ const HomeScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={estilos.contenedorPrincipal}>
-      <ScrollView contentContainerStyle={estilos.contenedor} showsVerticalScrollIndicator={false}>
-        <View style={estilos.cabecera}>
-          <TouchableOpacity onPress={() => establecerMenuAbierto(true)} style={estilos.botonCabecera}>
+    <View style={styles.contenedorPrincipal}>
+      <ScrollView contentContainerStyle={styles.contenedor} showsVerticalScrollIndicator={false}>
+        <View style={styles.cabecera}>
+          <TouchableOpacity onPress={() => establecerMenuAbierto(true)} style={styles.botonCabecera}>
             <Ionicons name="menu" size={32} color="#333333" />
           </TouchableOpacity>
-          
-          <TouchableOpacity onPress={manejarPerfil} style={estilos.botonCabecera}>
-            <Ionicons 
-              name={estaLogueado ? "person-circle" : "person-circle-outline"} 
-              size={36} 
-              color="#007AFF" 
+
+          <TouchableOpacity onPress={manejarPerfil} style={styles.botonCabecera}>
+            <Ionicons
+              name={Logueado ? "person-circle" : "person-circle-outline"}
+              size={36}
+              color="#007AFF"
             />
           </TouchableOpacity>
         </View>
 
-        <View style={estilos.contenedorCuadricula}>
-          <View style={estilos.filaCuadricula}>
-            <View style={[estilos.cuadro, { backgroundColor: '#6C8DF6' }]}>
-              <Text style={estilos.textoCuadro}>Ingresos</Text>
-              <Text style={estilos.montoCuadro}>$ 20,000</Text>
-              <Text style={estilos.textoTotal}>Total</Text>
+        <View style={styles.contenedorCuadricula}>
+          <View style={styles.filaCuadricula}>
+            <View style={[styles.cuadro, { backgroundColor: '#6C8DF6' }]}>
+              <Text style={styles.textoCuadro}>Ingresos</Text>
+              <Text style={styles.montoCuadro}>$ 20,000</Text>
+              <Text style={styles.textoTotal}>Total</Text>
             </View>
-            <View style={[estilos.cuadro, { backgroundColor: '#F78C9D' }]}>
-              <Text style={estilos.textoCuadro}>Gastos</Text>
-              <Text style={estilos.montoCuadro}>$ 5,000</Text>
-              <Text style={estilos.textoTotal}>Total</Text>
+            <View style={[styles.cuadro, { backgroundColor: '#F78C9D' }]}>
+              <Text style={styles.textoCuadro}>Gastos</Text>
+              <Text style={styles.montoCuadro}>$ 5,000</Text>
+              <Text style={styles.textoTotal}>Total</Text>
             </View>
           </View>
-          <View style={estilos.filaCuadricula}>
-            <View style={[estilos.cuadro, { backgroundColor: '#65ADF6' }]}>
-              <Text style={estilos.textoCuadro}>Créditos</Text>
-              <Text style={estilos.montoCuadro}>$ 10,000</Text>
-              <Text style={estilos.textoTotal}>Total</Text>
+          <View style={styles.filaCuadricula}>
+            <View style={[styles.cuadro, { backgroundColor: '#65ADF6' }]}>
+              <Text style={styles.textoCuadro}>Créditos</Text>
+              <Text style={styles.montoCuadro}>$ 10,000</Text>
+              <Text style={styles.textoTotal}>Total</Text>
             </View>
-            <View style={[estilos.cuadro, { backgroundColor: '#55D6A3' }]}>
-              <Text style={estilos.textoCuadro}>Otros</Text>
-              <Text style={estilos.montoCuadro}>$ 2,000</Text>
-              <Text style={estilos.textoTotal}>Total</Text>
+            <View style={[styles.cuadro, { backgroundColor: '#55D6A3' }]}>
+              <Text style={styles.textoCuadro}>Otros</Text>
+              <Text style={styles.montoCuadro}>$ 2,000</Text>
+              <Text style={styles.textoTotal}>Total</Text>
             </View>
           </View>
         </View>
 
-        <Text style={estilos.subtituloTarjetas}>Tarjetas</Text>
-        
-        {/* Aquí iría la gráfica, pero por ahora solo está el título como se solicitó */}
+        <Text style={styles.subtituloTarjetas}>Tarjetas</Text>
 
       </ScrollView>
 
       {menuAbierto && (
-        <View style={estilos.superposicionMenu}>
-          <TouchableOpacity 
-            style={estilos.fondoCierreMenu} 
-            activeOpacity={1} 
-            onPress={() => establecerMenuAbierto(false)} 
+        <View style={styles.superposicionMenu}>
+          <TouchableOpacity
+            style={styles.fondoCierreMenu}
+            activeOpacity={1}
+            onPress={() => establecerMenuAbierto(false)}
           />
-          <View style={estilos.barraLateral}>
-            <Text style={estilos.tituloApp}>FinanZapp</Text>
-            <View style={estilos.separador} />
-            <TouchableOpacity style={estilos.opcionMenu}>
-              <Text style={estilos.textoOpcionMenu}>Tarjetas</Text>
+          <View style={styles.barraLateral}>
+            <Text style={styles.tituloApp}>FinanZapp</Text>
+            <View style={styles.separador} />
+            <TouchableOpacity style={styles.opcionMenu}>
+              <Text style={styles.textoOpcionMenu}>Tarjetas</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={estilos.opcionMenu}>
-              <Text style={estilos.textoOpcionMenu}>Gastos</Text>
+            <TouchableOpacity style={styles.opcionMenu}>
+              <Text style={styles.textoOpcionMenu}>Gastos</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -90,7 +88,7 @@ const HomeScreen = ({ route, navigation }) => {
   );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
   contenedorPrincipal: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -150,7 +148,9 @@ const estilos = StyleSheet.create({
     color: '#333333',
     marginTop: 10,
   },
+
   // Estilos del Menú Lateral
+
   superposicionMenu: {
     position: 'absolute',
     top: 0,

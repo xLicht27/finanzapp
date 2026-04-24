@@ -9,7 +9,7 @@ const LoginScreen = ({ navigation }) => {
 
   const validarYEntrar = () => {
     establecerMensajeError('');
-    
+
     if (correo.trim() === '' || contrasena.trim() === '') {
       establecerMensajeError('Todos los campos son obligatorios');
       return;
@@ -21,18 +21,18 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    navigation.navigate('Inicio', { nombreUsuario: 'Juan Pérez' });
+    navigation.navigate('Inicio', { nombreUsuario: 'Alexander Benites' });
   };
 
   return (
-    <View style={estilos.contenedor}>
-      <Text style={estilos.titulo}>FinanZapp</Text>
-      <Text style={estilos.subtitulo}>Inicia sesión para continuar</Text>
-      
-      {mensajeError !== '' && <Text style={estilos.error}>{mensajeError}</Text>}
+    <View style={styles.contenedor}>
+      <Text style={styles.titulo}>FinanZapp</Text>
+      <Text style={styles.subtitulo}>Inicia sesión para continuar</Text>
+
+      {mensajeError !== '' && <Text style={styles.error}>{mensajeError}</Text>}
 
       <TextInput
-        style={estilos.entrada}
+        style={styles.entrada}
         placeholder="Correo electrónico"
         placeholderTextColor="#999"
         value={correo}
@@ -40,9 +40,9 @@ const LoginScreen = ({ navigation }) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      
+
       <TextInput
-        style={estilos.entrada}
+        style={styles.entrada}
         placeholder="Contraseña"
         placeholderTextColor="#999"
         value={contrasena}
@@ -52,10 +52,10 @@ const LoginScreen = ({ navigation }) => {
 
       <CustomButton titulo="Ingresar" alPresionar={validarYEntrar} />
 
-      <View style={estilos.contenedorRegistro}>
-        <Text style={estilos.textoRegistro}>¿No tienes una cuenta registrada? </Text>
-        <Text 
-          style={estilos.enlaceRegistro} 
+      <View style={styles.contenedorRegistro}>
+        <Text style={styles.textoRegistro}>¿No tienes una cuenta registrada? </Text>
+        <Text
+          style={styles.enlaceRegistro}
           onPress={() => navigation.navigate('Registro')}
         >
           Regístrate
@@ -65,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
     backgroundColor: '#FFFFFF',

@@ -32,15 +32,15 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={estilos.contenedorScroll}>
-      <View style={estilos.contenedor}>
-        <Text style={estilos.titulo}>Crear Cuenta</Text>
-        <Text style={estilos.subtitulo}>Regístrate para empezar a ahorrar</Text>
+    <ScrollView contentContainerStyle={styles.contenedorScroll}>
+      <View style={styles.contenedor}>
+        <Text style={styles.titulo}>Crear Cuenta</Text>
+        <Text style={styles.subtitulo}>Regístrate para empezar a ahorrar</Text>
 
-        {mensajeError !== '' && <Text style={estilos.error}>{mensajeError}</Text>}
+        {mensajeError !== '' && <Text style={styles.error}>{mensajeError}</Text>}
 
         <TextInput
-          style={estilos.entrada}
+          style={styles.entrada}
           placeholder="Nombre completo"
           placeholderTextColor="#999"
           value={nombre}
@@ -48,7 +48,7 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <TextInput
-          style={estilos.entrada}
+          style={styles.entrada}
           placeholder="Correo electrónico"
           placeholderTextColor="#999"
           value={correo}
@@ -58,7 +58,7 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <TextInput
-          style={estilos.entrada}
+          style={styles.entrada}
           placeholder="Contraseña"
           placeholderTextColor="#999"
           value={contrasena}
@@ -67,7 +67,7 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <TextInput
-          style={estilos.entrada}
+          style={styles.entrada}
           placeholder="Confirmar contraseña"
           placeholderTextColor="#999"
           value={confirmarContrasena}
@@ -77,10 +77,10 @@ const RegisterScreen = ({ navigation }) => {
 
         <CustomButton titulo="Registrarse" alPresionar={validarYRegistrar} />
 
-        <View style={estilos.contenedorEnlace}>
-          <Text style={estilos.textoEnlace}>¿Ya tienes una cuenta? </Text>
-          <Text 
-            style={estilos.enlace} 
+        <View style={styles.contenedorEnlace}>
+          <Text style={styles.textoEnlace}>¿Ya tienes una cuenta? </Text>
+          <Text
+            style={styles.enlace}
             onPress={() => navigation.navigate('Ingreso')}
           >
             Inicia sesión
@@ -91,7 +91,7 @@ const RegisterScreen = ({ navigation }) => {
   );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
   contenedorScroll: {
     flexGrow: 1,
     backgroundColor: '#FFFFFF',

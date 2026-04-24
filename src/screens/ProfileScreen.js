@@ -11,32 +11,32 @@ const ProfileScreen = ({ route, navigation }) => {
   };
 
   const guardarCambios = () => {
-    // Acción de guardar cambios
+
   };
 
   return (
-    <View style={estilos.contenedor}>
-      <View style={estilos.cabecera}>
-        <Text style={estilos.titulo}>Perfil</Text>
-        <TouchableOpacity onPress={cerrarSesion} style={estilos.botonCerrarSesion}>
+    <View style={styles.contenedor}>
+      <View style={styles.cabecera}>
+        <Text style={styles.titulo}>Perfil</Text>
+        <TouchableOpacity onPress={cerrarSesion} style={styles.botonCerrarSesion}>
           <Ionicons name="log-out-outline" size={32} color="#FF3B30" />
         </TouchableOpacity>
       </View>
-      
-      <View style={estilos.informacion}>
-        <View style={estilos.avatar} />
-        <Text style={estilos.nombre}>{nombreUsuario}</Text>
-        <Text style={estilos.correo}>usuario@correo.com</Text>
+
+      <View style={styles.informacion}>
+        <View style={styles.avatar} />
+        <Text style={styles.nombre}>{nombreUsuario}</Text>
+        <Text style={styles.correo}>usuario@correo.com</Text>
       </View>
 
-      <View style={estilos.espaciador} />
+      <View style={styles.espaciador} />
 
       <CustomButton titulo="Guardar Cambios" alPresionar={guardarCambios} />
     </View>
   );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
     backgroundColor: '#FFFFFF',

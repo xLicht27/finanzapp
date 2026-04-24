@@ -3,13 +3,13 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const CustomButton = ({ titulo, alPresionar }) => {
   return (
-    <TouchableOpacity style={estilos.boton} onPress={alPresionar} activeOpacity={0.8}>
-      <Text style={estilos.texto}>{titulo}</Text>
+    <TouchableOpacity style={styles.boton} onPress={alPresionar} activeOpacity={0.8}>
+      <Text style={styles.texto}>{titulo}</Text>
     </TouchableOpacity>
   );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
   boton: {
     backgroundColor: '#007AFF',
     paddingVertical: 16,
