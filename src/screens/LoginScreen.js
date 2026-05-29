@@ -1,102 +1,192 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {
+  View, Text, TextInput, StyleSheet, Image,
+  TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
+import { useAuth } from '../context/AuthContext';
+import { COLORES } from '../constants/theme';
 
 const LoginScreen = ({ navigation }) => {
-  const [correo, establecerCorreo] = useState('');
-  const [contrasena, establecerContrasena] = useState('');
-  const [mensajeError, establecerMensajeError] = useState('');
+  const { iniciarSesion } = useAuth();
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+  const [mensajeError, setMensajeError] = useState('');
+  const [cargando, setCargando] = useState(false);
 
-  const validarYEntrar = () => {
-    establecerMensajeError('');
-
-    if (correo.trim() === '' || contrasena.trim() === '') {
-      establecerMensajeError('Todos los campos son obligatorios');
+  const validarYEntrar = async () => {
+    setMensajeError('');
+    if (!correo.trim() || !contrasena.trim()) {
+      setMensajeError('Todos los campos son obligatorios');
       return;
     }
-
-    const formatoCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formatoCorreoValido.test(correo)) {
-      establecerMensajeError('El formato del correo no es válido');
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formatoCorreo.test(correo)) {
+      setMensajeError('El formato del correo no es válido');
       return;
     }
-
-    navigation.navigate('Inicio', { nombreUsuario: 'Alexander Benites' });
+    setCargando(true);
+    await iniciarSesion({ nombre: 'Carlos Mendoza', correo });
+    setCargando(false);
   };
 
   return (
-    <View style={styles.contenedor}>
-      <Text style={styles.titulo}>FinanZapp</Text>
-      <Text style={styles.subtitulo}>Inicia sesión para continuar</Text>
+    <KeyboardAvoidingView
+      style={estilos.fondoPrincipal}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={estilos.scroll} keyboardShouldPersistTaps="handled">
+        <Image
+          source={require('../../assets/logo.png')}
+          style={estilos.logo}
+          resizeMode="contain"
+        />
 
-      {mensajeError !== '' && <Text style={styles.error}>{mensajeError}</Text>}
+        <Text style={estilos.titulo}>Bienvenido</Text>
+        <Text style={estilos.subtitulo}>Ingresa tus credenciales para continuar</Text>
 
-      <TextInput
-        style={styles.entrada}
-        placeholder="Correo electrónico"
-        placeholderTextColor="#999"
-        value={correo}
-        onChangeText={establecerCorreo}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        {mensajeError !== '' && (
+          <View style={estilos.contenedorError}>
+            <Text style={estilos.textoError}>{mensajeError}</Text>
+          </View>
+        )}
 
-      <TextInput
-        style={styles.entrada}
-        placeholder="Contraseña"
-        placeholderTextColor="#999"
-        value={contrasena}
-        onChangeText={establecerContrasena}
-        secureTextEntry
-      />
+        <View style={estilos.grupoEntrada}>
+          <Text style={estilos.etiqueta}>Correo Electrónico</Text>
+          <View style={estilos.contenedorInput}>
+            <Ionicons name="mail-outline" size={18} color={COLORES.textoSecundario} style={estilos.iconoInput} />
+            <TextInput
+              style={estilos.entrada}
+              placeholder="carlos@ejemplo.com"
+              placeholderTextColor={COLORES.textoSecundario}
+              value={correo}
+              onChangeText={setCorreo}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+        </View>
 
-      <CustomButton titulo="Ingresar" alPresionar={validarYEntrar} />
+        <View style={estilos.grupoEntrada}>
+          <Text style={estilos.etiqueta}>Contraseña</Text>
+          <View style={estilos.contenedorInput}>
+            <Ionicons name="lock-closed-outline" size={18} color={COLORES.textoSecundario} style={estilos.iconoInput} />
+            <TextInput
+              style={estilos.entrada}
+              placeholder="••••••••"
+              placeholderTextColor={COLORES.textoSecundario}
+              value={contrasena}
+              onChangeText={setContrasena}
+              secureTextEntry={!mostrarContrasena}
+            />
+            <TouchableOpacity onPress={() => setMostrarContrasena(!mostrarContrasena)}>
+              <Ionicons
+                name={mostrarContrasena ? 'eye-outline' : 'eye-off-outline'}
+                size={18}
+                color={COLORES.textoSecundario}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-      <View style={styles.contenedorRegistro}>
-        <Text style={styles.textoRegistro}>¿No tienes una cuenta registrada? </Text>
-        <Text
-          style={styles.enlaceRegistro}
-          onPress={() => navigation.navigate('Registro')}
-        >
-          Regístrate
-        </Text>
-      </View>
-    </View>
+        <TouchableOpacity style={estilos.olvidaste}>
+          <Text style={estilos.textoOlvidaste}>¿Olvidaste tu contraseña?</Text>
+        </TouchableOpacity>
+
+        <CustomButton titulo="→ Ingresar" alPresionar={validarYEntrar} cargando={cargando} />
+
+        <View style={estilos.contenedorRegistro}>
+          <Text style={estilos.textoRegistro}>¿No tienes una cuenta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Registro')}>
+            <Text style={estilos.enlaceRegistro}>Crea cuenta</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  contenedor: {
+const estilos = StyleSheet.create({
+  fondoPrincipal: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 30,
+    backgroundColor: COLORES.fondoPrimario,
+  },
+  scroll: {
+    flexGrow: 1,
     justifyContent: 'center',
+    padding: 28,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    alignSelf: 'center',
+    marginBottom: 24,
   },
   titulo: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 10,
+    fontSize: 28,
+    fontWeight: '700',
+    color: COLORES.textoPrimario,
     textAlign: 'center',
+    marginBottom: 6,
   },
   subtitulo: {
-    fontSize: 16,
-    color: '#666666',
-    marginBottom: 40,
+    fontSize: 14,
+    color: COLORES.textoSecundario,
     textAlign: 'center',
+    marginBottom: 32,
+  },
+  contenedorError: {
+    backgroundColor: 'rgba(248, 81, 73, 0.12)',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORES.peligro,
+  },
+  textoError: {
+    color: COLORES.peligro,
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  grupoEntrada: {
+    marginBottom: 16,
+  },
+  etiqueta: {
+    color: COLORES.textoSecundario,
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 6,
+    letterSpacing: 0.5,
+  },
+  contenedorInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORES.fondoTarjeta,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORES.borde,
+    paddingHorizontal: 14,
+    paddingVertical: 2,
+  },
+  iconoInput: {
+    marginRight: 10,
   },
   entrada: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    color: '#333333',
+    flex: 1,
+    color: COLORES.textoPrimario,
+    fontSize: 14,
+    paddingVertical: 14,
   },
-  error: {
-    color: '#FF3B30',
-    marginBottom: 16,
-    textAlign: 'center',
+  olvidaste: {
+    alignSelf: 'flex-end',
+    marginBottom: 8,
+    marginTop: -4,
+  },
+  textoOlvidaste: {
+    color: COLORES.accentVerde,
+    fontSize: 13,
   },
   contenedorRegistro: {
     flexDirection: 'row',
@@ -104,12 +194,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   textoRegistro: {
-    fontSize: 15,
-    color: '#666666',
+    fontSize: 14,
+    color: COLORES.textoSecundario,
   },
   enlaceRegistro: {
-    fontSize: 15,
-    color: '#007AFF',
+    fontSize: 14,
+    color: COLORES.accentVerde,
     fontWeight: '600',
   },
 });

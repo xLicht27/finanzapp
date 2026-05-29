@@ -1,202 +1,157 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import {
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
+import TransaccionItem from '../components/TransaccionItem';
+import PresupuestoBadge from '../components/PresupuestoBadge';
+import { COLORES } from '../constants/theme';
 
-const { width, height } = Dimensions.get('window');
+const CLAVE_TRANSACCIONES = 'finanzaap_transacciones';
 
-const HomeScreen = ({ route, navigation }) => {
-  const { nombreUsuario } = route.params || { nombreUsuario: 'Invitado' };
-  const Logueado = nombreUsuario !== 'Invitado';
-  const [menuAbierto, establecerMenuAbierto] = useState(false);
+const transaccionesIniciales = [
+  { id: '1', nombre: 'Almuerzo Ejecutivo', monto: -32.5, categoria: 'comida', fecha: 'Hoy, 14:30' },
+  { id: '2', nombre: 'Cafetería Central', monto: -4.2, categoria: 'comida', fecha: 'Hoy, 09:11' },
+  { id: '3', nombre: 'Uber Viaje', monto: -15.0, categoria: 'transporte', fecha: 'Ayer, 19:41' },
+];
 
-  const manejarPerfil = () => {
-    if (Logueado) {
-      navigation.navigate('Perfil', { nombreUsuario });
-    } else {
-      navigation.navigate('Ingreso');
+const HomeScreen = () => {
+  const { usuario } = useAuth();
+  const [tipoCambio, setTipoCambio] = useState(null);
+  const [cargandoApi, setCargandoApi] = useState(true);
+  const [transacciones, setTransacciones] = useState([]);
+
+  useEffect(() => {
+    obtenerTipoCambio();
+    cargarTransacciones();
+  }, []);
+
+  const obtenerTipoCambio = async () => {
+    try {
+      const respuesta = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      const datos = await respuesta.json();
+      setTipoCambio(datos.rates.PEN);
+    } catch (error) {
+      setTipoCambio(3.7);
+    } finally {
+      setCargandoApi(false);
     }
   };
 
+  const cargarTransacciones = async () => {
+    try {
+      const guardadas = await AsyncStorage.getItem(CLAVE_TRANSACCIONES);
+      if (guardadas) {
+        setTransacciones(JSON.parse(guardadas));
+      } else {
+        await AsyncStorage.setItem(CLAVE_TRANSACCIONES, JSON.stringify(transaccionesIniciales));
+        setTransacciones(transaccionesIniciales);
+      }
+    } catch (error) {
+      setTransacciones(transaccionesIniciales);
+    }
+  };
+
+  const presupuestoDiario = tipoCambio ? (45 * tipoCambio).toFixed(2) : null;
+
   return (
-    <View style={styles.contenedorPrincipal}>
-      <ScrollView contentContainerStyle={styles.contenedor} showsVerticalScrollIndicator={false}>
-        <View style={styles.cabecera}>
-          <TouchableOpacity onPress={() => establecerMenuAbierto(true)} style={styles.botonCabecera}>
-            <Ionicons name="menu" size={32} color="#333333" />
-          </TouchableOpacity>
+    <ScrollView
+      style={estilos.fondoPrincipal}
+      contentContainerStyle={estilos.scroll}
+      showsVerticalScrollIndicator={false}
+    >
+      <Text style={estilos.saludo}>
+        Hola, {usuario?.nombre?.split(' ')[0] || 'Usuario'} 👋
+      </Text>
 
-          <TouchableOpacity onPress={manejarPerfil} style={styles.botonCabecera}>
-            <Ionicons
-              name={Logueado ? "person-circle" : "person-circle-outline"}
-              size={36}
-              color="#007AFF"
-            />
-          </TouchableOpacity>
-        </View>
+      <PresupuestoBadge
+        presupuesto={presupuestoDiario}
+        moneda="S/."
+        cargando={cargandoApi}
+      />
 
-        <View style={styles.contenedorCuadricula}>
-          <View style={styles.filaCuadricula}>
-            <View style={[styles.cuadro, { backgroundColor: '#6C8DF6' }]}>
-              <Text style={styles.textoCuadro}>Ingresos</Text>
-              <Text style={styles.montoCuadro}>$ 20,000</Text>
-              <Text style={styles.textoTotal}>Total</Text>
-            </View>
-            <View style={[styles.cuadro, { backgroundColor: '#F78C9D' }]}>
-              <Text style={styles.textoCuadro}>Gastos</Text>
-              <Text style={styles.montoCuadro}>$ 5,000</Text>
-              <Text style={styles.textoTotal}>Total</Text>
-            </View>
-          </View>
-          <View style={styles.filaCuadricula}>
-            <View style={[styles.cuadro, { backgroundColor: '#65ADF6' }]}>
-              <Text style={styles.textoCuadro}>Créditos</Text>
-              <Text style={styles.montoCuadro}>$ 10,000</Text>
-              <Text style={styles.textoTotal}>Total</Text>
-            </View>
-            <View style={[styles.cuadro, { backgroundColor: '#55D6A3' }]}>
-              <Text style={styles.textoCuadro}>Otros</Text>
-              <Text style={styles.montoCuadro}>$ 2,000</Text>
-              <Text style={styles.textoTotal}>Total</Text>
-            </View>
-          </View>
-        </View>
-
-        <Text style={styles.subtituloTarjetas}>Tarjetas</Text>
-
-      </ScrollView>
-
-      {menuAbierto && (
-        <View style={styles.superposicionMenu}>
-          <TouchableOpacity
-            style={styles.fondoCierreMenu}
-            activeOpacity={1}
-            onPress={() => establecerMenuAbierto(false)}
-          />
-          <View style={styles.barraLateral}>
-            <Text style={styles.tituloApp}>FinanZapp</Text>
-            <View style={styles.separador} />
-            <TouchableOpacity style={styles.opcionMenu}>
-              <Text style={styles.textoOpcionMenu}>Tarjetas</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.opcionMenu}>
-              <Text style={styles.textoOpcionMenu}>Gastos</Text>
-            </TouchableOpacity>
-          </View>
+      {tipoCambio && (
+        <View style={estilos.bannerApi}>
+          <Text style={estilos.textoBannerApi}>
+            Tipo de cambio USD/PEN: S/. {tipoCambio?.toFixed(3)}
+          </Text>
         </View>
       )}
-    </View>
+
+      <View style={estilos.encabezadoSeccion}>
+        <Text style={estilos.tituloSeccion}>Actividad Reciente</Text>
+        <TouchableOpacity>
+          <Text style={estilos.verTodo}>Ver todo</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={estilos.tarjeta}>
+        {transacciones.map((item) => (
+          <TransaccionItem
+            key={item.id}
+            nombre={item.nombre}
+            monto={item.monto}
+            categoria={item.categoria}
+            fecha={item.fecha}
+          />
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  contenedorPrincipal: {
+const estilos = StyleSheet.create({
+  fondoPrincipal: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORES.fondoPrimario,
   },
-  contenedor: {
-    padding: 25,
-    paddingTop: 50,
-  },
-  cabecera: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  botonCabecera: {
-    padding: 5,
-  },
-  contenedorCuadricula: {
-    marginBottom: 30,
-  },
-  filaCuadricula: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  cuadro: {
-    width: '47%',
+  scroll: {
     padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    paddingBottom: 30,
   },
-  textoCuadro: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    marginBottom: 10,
-    opacity: 0.9,
-  },
-  montoCuadro: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  textoTotal: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  subtituloTarjetas: {
+  saludo: {
+    color: COLORES.textoPrimario,
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginTop: 10,
+    fontWeight: '600',
+    marginBottom: 20,
   },
-
-  // Estilos del Menú Lateral
-
-  superposicionMenu: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: width,
-    height: height,
+  bannerApi: {
+    backgroundColor: COLORES.accentVerdeTenue,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: COLORES.accentVerde,
+    alignItems: 'center',
+  },
+  textoBannerApi: {
+    color: COLORES.accentVerde,
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  encabezadoSeccion: {
     flexDirection: 'row',
-    zIndex: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  fondoCierreMenu: {
-    position: 'absolute',
-    width: width,
-    height: height,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  tituloSeccion: {
+    color: COLORES.textoPrimario,
+    fontSize: 16,
+    fontWeight: '600',
   },
-  barraLateral: {
-    width: width * 0.7,
-    height: height,
-    backgroundColor: '#FFFFFF',
-    padding: 30,
-    paddingTop: 60,
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
+  verTodo: {
+    color: COLORES.accentVerde,
+    fontSize: 13,
   },
-  tituloApp: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#007AFF',
-    marginBottom: 20,
-  },
-  separador: {
-    height: 1,
-    backgroundColor: '#E5E5EA',
-    marginBottom: 20,
-  },
-  opcionMenu: {
-    paddingVertical: 15,
-  },
-  textoOpcionMenu: {
-    fontSize: 18,
-    color: '#333333',
+  tarjeta: {
+    backgroundColor: COLORES.fondoTarjeta,
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: COLORES.borde,
   },
 });
 
 export default HomeScreen;
-
