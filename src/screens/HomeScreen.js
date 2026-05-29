@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
 import TransaccionItem from '../components/TransaccionItem';
 import PresupuestoBadge from '../components/PresupuestoBadge';
+import useTipoCambio from '../hooks/useTipoCambio';
 import { COLORES } from '../constants/theme';
 
 const CLAVE_TRANSACCIONES = 'finanzaap_transacciones';
@@ -18,26 +19,13 @@ const transaccionesIniciales = [
 
 const HomeScreen = () => {
   const { usuario } = useAuth();
-  const [tipoCambio, setTipoCambio] = useState(null);
-  const [cargandoApi, setCargandoApi] = useState(true);
+  const { tasa, cargando: cargandoApi, refrescar } = useTipoCambio('USD');
   const [transacciones, setTransacciones] = useState([]);
+  const [refrescando, setRefrescando] = useState(false);
 
   useEffect(() => {
-    obtenerTipoCambio();
     cargarTransacciones();
   }, []);
-
-  const obtenerTipoCambio = async () => {
-    try {
-      const respuesta = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-      const datos = await respuesta.json();
-      setTipoCambio(datos.rates.PEN);
-    } catch (error) {
-      setTipoCambio(3.7);
-    } finally {
-      setCargandoApi(false);
-    }
-  };
 
   const cargarTransacciones = async () => {
     try {
@@ -53,13 +41,27 @@ const HomeScreen = () => {
     }
   };
 
-  const presupuestoDiario = tipoCambio ? (45 * tipoCambio).toFixed(2) : null;
+  const alRefrescar = async () => {
+    setRefrescando(true);
+    await refrescar();
+    setRefrescando(false);
+  };
+
+  const presupuestoDiario = tasa ? (45 * tasa).toFixed(2) : null;
 
   return (
     <ScrollView
       style={estilos.fondoPrincipal}
       contentContainerStyle={estilos.scroll}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refrescando}
+          onRefresh={alRefrescar}
+          tintColor={COLORES.accentVerde}
+          colors={[COLORES.accentVerde]}
+        />
+      }
     >
       <Text style={estilos.saludo}>
         Hola, {usuario?.nombre?.split(' ')[0] || 'Usuario'} 👋
@@ -71,10 +73,10 @@ const HomeScreen = () => {
         cargando={cargandoApi}
       />
 
-      {tipoCambio && (
+      {tasa && (
         <View style={estilos.bannerApi}>
           <Text style={estilos.textoBannerApi}>
-            Tipo de cambio USD/PEN: S/. {tipoCambio?.toFixed(3)}
+            Tipo de cambio USD/PEN: S/. {tasa?.toFixed(3)}
           </Text>
         </View>
       )}
