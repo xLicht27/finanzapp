@@ -22,9 +22,14 @@ const HomeScreen = () => {
   const { tasa, cargando: cargandoApi, refrescar } = useTipoCambio('USD');
   const [transacciones, setTransacciones] = useState([]);
   const [refrescando, setRefrescando] = useState(false);
+  const [colorSpinner, setColorSpinner] = useState('transparent');
 
   useEffect(() => {
     cargarTransacciones();
+    const timer = setTimeout(() => {
+      setColorSpinner(COLORES.accentVerde);
+    }, 150);
+    return () => clearTimeout(timer);
   }, []);
 
   const cargarTransacciones = async () => {
@@ -58,8 +63,9 @@ const HomeScreen = () => {
         <RefreshControl
           refreshing={refrescando}
           onRefresh={alRefrescar}
-          tintColor={COLORES.accentVerde}
-          colors={[COLORES.accentVerde]}
+          tintColor={colorSpinner}
+          colors={[colorSpinner]}
+          progressBackgroundColor={COLORES.fondoTarjeta}
         />
       }
     >
