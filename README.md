@@ -97,7 +97,15 @@ Ubicado en `AjustesEliminarCuentaScreen.js`, el flujo consta de una secuencia de
 ### Notificaciones Locales Nativas (expo-notifications)
 Se ha integrado el soporte nativo de notificaciones locales para interactuar activamente con el usuario y cumplir con los criterios de evaluación de capacidades nativas:
 *   **Disparador de Preferencias**: Al activar cualquier interruptor en la pantalla de Configuración de Alertas, se lanza de inmediato una notificación nativa local de confirmación.
-*   **Disparador de Optimización por IA**: Al finalizar la simulación del diagnóstico de cartera por Inteligencia Artificial en el panel de Servicios, se despacha una notificación nativa local que avisa que el reporte está listo.
+*   **Disparador de Optimización por IA**: Al finalizar la simulación del diagnóstico de cartera por Inteligencia Artificial en el panel de Servicios, se despacha una notificación nativa local flotante: *"¡Optimización Completa! Tu reporte de IA ya está listo."*
+*   **Disparador de Escaneo**: Al completar el escaneo de un comprobante físico por cámara, se lanza la notificación nativa local: *"¡Recibo Procesado! Se ha registrado un gasto de S/. 25.50 en la categoría Alimentos."*
+
+### Escáner de Comprobantes con Cámara Nativa (expo-camera)
+Se incorporó el acceso nativo al hardware de la cámara del dispositivo móvil para la sección "Escáner de Recibos Físicos":
+*   **Gestión de Permisos**: Solicita accesos nativos del sistema en español. En caso de ser denegados, muestra un cuadro de diálogo descriptivo solicitando la habilitación desde los ajustes del sistema.
+*   **Captura en Tiempo Real**: Abre una interfaz de cámara nativa en pantalla completa (`CameraView`) para visualizar lo que apunta la lente.
+*   **Captura Asíncrona**: Al presionar el botón "Tomar Foto", procesa y captura la imagen asíncronamente, cierra la cámara y muestra la confirmación en pantalla *"Comprobante escaneado con éxito"*, disparando a su vez el registro del gasto automático de forma simulada.
+
 
 
 ## Guía de Instalación y Ejecución

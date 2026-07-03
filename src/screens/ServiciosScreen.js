@@ -4,6 +4,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTema } from '../context/TemaContext';
 import { obtenerEstilosGlobales } from '../styles/globales';
 import { serviciosEstilos } from '../styles/ServiciosScreenEstilos';
@@ -26,6 +27,7 @@ const ServiciosScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [metaSeleccionada, setMetaSeleccionada] = useState(null);
   const [diagnosticoEjecutado, setDiagnosticoEjecutado] = useState(false);
+  const [camaraVisible, setCamaraVisible] = useState(false);
   const [nombre, setNombre] = useState('');
   const [montoActual, setMontoActual] = useState('');
   const [montoObjetivo, setMontoObjetivo] = useState('');
@@ -33,6 +35,8 @@ const ServiciosScreen = () => {
   const [guardando, setGuardando] = useState(false);
 
   const swipeableRefs = useRef({});
+  const refCamara = useRef(null);
+  const [permiso, solicitarPermiso] = useCameraPermissions();
 
   useEffect(() => {
     cargarMetas();
@@ -156,12 +160,45 @@ const ServiciosScreen = () => {
     if (status === 'granted') {
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: 'Diagnóstico Completado',
-          body: 'El análisis de tu cartera financiera por IA ha finalizado con éxito.',
+          title: '¡Optimización Completa!',
+          body: 'Tu reporte de IA ya está listo.',
           sound: true,
         },
         trigger: null,
       });
+    }
+  };
+
+  const activarCamara = async () => {
+    const { status } = await solicitarPermiso();
+    if (status === 'granted') {
+      setCamaraVisible(true);
+    } else {
+      Alert.alert('Permiso Denegado', 'Se requiere acceso a la cámara para escanear comprobantes físicos.');
+    }
+  };
+
+  const capturarFoto = async () => {
+    if (refCamara.current) {
+      try {
+        await refCamara.current.takePictureAsync();
+        setCamaraVisible(false);
+        Alert.alert('Escaneo', 'Comprobante escaneado con éxito');
+        
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status === 'granted') {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: '¡Recibo Procesado!',
+              body: 'Se ha registrado un gasto de S/. 25.50 en la categoría Alimentos.',
+              sound: true,
+            },
+            trigger: null,
+          });
+        }
+      } catch (err) {
+        Alert.alert('Error', 'No se pudo capturar la fotografía del comprobante.');
+      }
     }
   };
 
@@ -192,6 +229,34 @@ const ServiciosScreen = () => {
       </Animated.View>
     );
   };
+
+  if (camaraVisible) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
+        <CameraView
+          style={{ flex: 1 }}
+          ref={refCamara}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 50 }}>
+            <View style={{ flexDirection: 'row', gap: 24 }}>
+              <TouchableOpacity
+                style={{ backgroundColor: colores.peligro, paddingHorizontal: 24, paddingVertical: 14, borderRadius: 10 }}
+                onPress={() => setCamaraVisible(false)}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: '600', fontSize: 14 }}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ backgroundColor: colores.accentVerde, paddingHorizontal: 24, paddingVertical: 14, borderRadius: 10 }}
+                onPress={capturarFoto}
+              >
+                <Text style={{ color: colores.fondoPrimario, fontWeight: '700', fontSize: 14 }}>Tomar Foto</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </CameraView>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -236,6 +301,29 @@ const ServiciosScreen = () => {
             onPress={abrirModalCrear}
           >
             <Ionicons name="add" size={22} color={colores.accentVerde} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={[estilos.tarjetaAI, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde, marginBottom: 16 }]}>
+          <View style={estilos.encabezadoAI}>
+            <Ionicons name="camera-outline" size={16} color={colores.accentVerde} />
+            <Text style={[estilos.tituloAI, { color: colores.accentVerde }]}>ESCÁNER FÍSICO</Text>
+          </View>
+          <Text style={[estilos.tituloAnalisis, { color: colores.textoPrimario }]}>Escáner de Recibos Físicos</Text>
+          <Text style={[estilos.descripcionAI, { color: colores.textoSecundario }]}>
+            Registra tus transacciones al instante escaneando la imagen de tus recibos impresos.
+          </Text>
+
+          <TouchableOpacity
+            style={[
+              estilos.botonDiagnostico,
+              { backgroundColor: colores.accentVerde }
+            ]}
+            onPress={activarCamara}
+          >
+            <Text style={[estilos.textoBotonDiagnostico, { color: colores.fondoPrimario }]}>
+              ESCANEAR COMPROBANTE
+            </Text>
           </TouchableOpacity>
         </View>
 
