@@ -6,8 +6,8 @@ import {
 import { Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { useTema } from '../context/TemaContext';
 import MetaAhorroCard from '../components/MetaAhorroCard';
-import { COLORES } from '../constants/theme';
 
 const CLAVE_METAS = 'finanzaap_metas';
 
@@ -18,6 +18,7 @@ const metasIniciales = [
 ];
 
 const ServiciosScreen = () => {
+  const { colores, t } = useTema();
   const [metas, setMetas] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [metaSeleccionada, setMetaSeleccionada] = useState(null);
@@ -177,20 +178,20 @@ const ServiciosScreen = () => {
   return (
     <>
       <ScrollView
-        style={estilos.fondoPrincipal}
+        style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
         contentContainerStyle={estilos.scroll}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={estilos.etiquetaSeccion}>SERVICIOS ÚTILES PARA EL AHORRO</Text>
+        <Text style={[estilos.etiquetaSeccion, { color: colores.textoSecundario }]}>{t('serviciosUtiles')}</Text>
 
-        <View style={estilos.tarjeta}>
+        <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
           <View style={estilos.encabezadoMetas}>
-            <View style={estilos.iconoMetasContenedor}>
-              <Ionicons name="flag-outline" size={20} color={COLORES.accentVerde} />
+            <View style={[estilos.iconoMetasContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+              <Ionicons name="flag-outline" size={20} color={colores.accentVerde} />
             </View>
-            <Text style={estilos.tituloMetas}>Metas de Ahorro</Text>
+            <Text style={[estilos.tituloMetas, { color: colores.textoPrimario }]}>{t('metasAhorro')}</Text>
             <View style={estilos.filaSubtitulo}>
-              <Text style={estilos.subtituloMetas}>Desliza una tarjeta para editar o eliminar.</Text>
+              <Text style={[estilos.subtituloMetas, { color: colores.textoSecundario }]}>{t('deslizaTarjeta')}</Text>
             </View>
           </View>
 
@@ -212,27 +213,34 @@ const ServiciosScreen = () => {
             </Swipeable>
           ))}
 
-          <TouchableOpacity style={estilos.botonAgregarMeta} onPress={abrirModalCrear}>
-            <Ionicons name="add" size={22} color={COLORES.accentVerde} />
+          <TouchableOpacity
+            style={[estilos.botonAgregarMeta, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}
+            onPress={abrirModalCrear}
+          >
+            <Ionicons name="add" size={22} color={colores.accentVerde} />
           </TouchableOpacity>
         </View>
 
-        <View style={estilos.tarjetaAI}>
+        <View style={[estilos.tarjetaAI, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
           <View style={estilos.encabezadoAI}>
-            <Ionicons name="flash" size={16} color={COLORES.accentVerde} />
-            <Text style={estilos.tituloAI}>OPTIMIZACIÓN AI</Text>
+            <Ionicons name="flash" size={16} color={colores.accentVerde} />
+            <Text style={[estilos.tituloAI, { color: colores.accentVerde }]}>{t('optimizacionAi')}</Text>
           </View>
-          <Text style={estilos.tituloAnalisis}>Análisis de Cartera</Text>
-          <Text style={estilos.descripcionAI}>
-            Permite que la IA te dé un análisis completo sobre los gastos realizados y te otorgue recomendaciones.
+          <Text style={[estilos.tituloAnalisis, { color: colores.textoPrimario }]}>{t('analisisCartera')}</Text>
+          <Text style={[estilos.descripcionAI, { color: colores.textoSecundario }]}>
+            {t('descripcionAi')}
           </Text>
 
           <TouchableOpacity
-            style={[estilos.botonDiagnostico, diagnosticoEjecutado && estilos.botonDiagnosticoEjecutado]}
+            style={[
+              estilos.botonDiagnostico,
+              { backgroundColor: colores.accentVerde },
+              diagnosticoEjecutado && { backgroundColor: colores.altoContraste ? colores.borde : (colores.modoVisual === 'Claro' ? '#00795F' : '#0D5E3E') }
+            ]}
             onPress={() => setDiagnosticoEjecutado(true)}
           >
-            <Text style={estilos.textoBotonDiagnostico}>
-              {diagnosticoEjecutado ? '✓ DIAGNÓSTICO COMPLETADO' : 'EJECUTAR DIAGNÓSTICO'}
+            <Text style={[estilos.textoBotonDiagnostico, { color: colores.fondoPrimario }]}>
+              {diagnosticoEjecutado ? t('diagnosticoCompletado') : t('ejecutarDiagnostico')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -248,66 +256,70 @@ const ServiciosScreen = () => {
           style={estilos.modalOverlay}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={estilos.modalContenedor}>
+          <View style={[estilos.modalContenedor, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
             <View style={estilos.modalEncabezado}>
-              <Text style={estilos.modalTitulo}>
-                {metaSeleccionada ? 'Editar Meta' : 'Nueva Meta de Ahorro'}
+              <Text style={[estilos.modalTitulo, { color: colores.textoPrimario }]}>
+                {metaSeleccionada ? t('editarMeta') : t('nuevaMeta')}
               </Text>
               <TouchableOpacity onPress={cerrarModal}>
-                <Ionicons name="close" size={22} color={COLORES.textoSecundario} />
+                <Ionicons name="close" size={22} color={colores.textoSecundario} />
               </TouchableOpacity>
             </View>
 
-            <Text style={estilos.etiquetaCampo}>Nombre de la meta</Text>
+            <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario }]}>{t('nombreMeta')}</Text>
             <TextInput
-              style={estilos.entrada}
+              style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
               placeholder="Ej: Viaje a Europa"
-              placeholderTextColor={COLORES.textoSecundario}
+              placeholderTextColor={colores.textoSecundario}
               value={nombre}
               onChangeText={setNombre}
             />
 
-            <Text style={estilos.etiquetaCampo}>Ahorro actual ($)</Text>
+            <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario }]}>{t('ahorroActual')}</Text>
             <TextInput
-              style={estilos.entrada}
+              style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
               placeholder="0"
-              placeholderTextColor={COLORES.textoSecundario}
+              placeholderTextColor={colores.textoSecundario}
               keyboardType="numeric"
               value={montoActual}
               onChangeText={setMontoActual}
             />
 
-            <Text style={estilos.etiquetaCampo}>Monto objetivo ($)</Text>
+            <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario }]}>{t('montoObjetivo')}</Text>
             <TextInput
-              style={estilos.entrada}
+              style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
               placeholder="Ej: 5000"
-              placeholderTextColor={COLORES.textoSecundario}
+              placeholderTextColor={colores.textoSecundario}
               keyboardType="numeric"
               value={montoObjetivo}
               onChangeText={setMontoObjetivo}
             />
 
-            <Text style={estilos.etiquetaCampo}>Plazo (opcional)</Text>
+            <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario }]}>{t('plazoOpcional')}</Text>
             <TextInput
-              style={estilos.entrada}
+              style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
               placeholder="Ej: Dic 2026"
-              placeholderTextColor={COLORES.textoSecundario}
+              placeholderTextColor={colores.textoSecundario}
               value={fechaLimite}
               onChangeText={setFechaLimite}
             />
 
             <TouchableOpacity
-              style={[estilos.botonGuardar, guardando && estilos.botonGuardando]}
+              style={[
+                estilos.botonGuardar,
+                { backgroundColor: colores.accentVerde },
+                guardando && estilos.botonGuardando
+              ]}
               onPress={guardarMeta}
               disabled={guardando}
             >
-              <Text style={estilos.textoBotonGuardar}>
-                {guardando ? 'Guardando...' : metaSeleccionada ? 'Actualizar Meta' : 'Guardar Meta'}
+              <Text style={[estilos.textoBotonGuardar, { color: colores.fondoPrimario }]}>
+                {guardando ? '...' : metaSeleccionada ? t('actualizarMeta') : t('guardarMeta')}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={estilos.botonCancelar} onPress={cerrarModal}>
-              <Text style={estilos.textoBotonCancelar}>Cancelar</Text>
+              <Text style={[estilos.textoBotonCancelar, { color: colores.textoSecundario }]}>{t('cancelar')}</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -319,26 +331,22 @@ const ServiciosScreen = () => {
 const estilos = StyleSheet.create({
   fondoPrincipal: {
     flex: 1,
-    backgroundColor: COLORES.fondoPrimario,
   },
   scroll: {
     padding: 20,
     paddingBottom: 30,
   },
   etiquetaSeccion: {
-    color: COLORES.textoSecundario,
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 1.5,
     marginBottom: 14,
   },
   tarjeta: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
   encabezadoMetas: {
     marginBottom: 16,
@@ -353,19 +361,16 @@ const estilos = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 10,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
   },
   tituloMetas: {
-    color: COLORES.textoPrimario,
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 2,
   },
   subtituloMetas: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
   },
   contenedorAcciones: {
@@ -403,20 +408,16 @@ const estilos = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
     borderWidth: 1,
-    borderColor: COLORES.accentVerde,
     marginTop: 4,
   },
   tarjetaAI: {
-    backgroundColor: '#0D2B1E',
     borderRadius: 14,
     padding: 18,
     borderWidth: 1,
-    borderColor: COLORES.accentVerde,
   },
   encabezadoAI: {
     flexDirection: 'row',
@@ -425,34 +426,26 @@ const estilos = StyleSheet.create({
     marginBottom: 8,
   },
   tituloAI: {
-    color: COLORES.accentVerde,
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1.5,
   },
   tituloAnalisis: {
-    color: COLORES.textoPrimario,
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
   },
   descripcionAI: {
-    color: COLORES.textoSecundario,
     fontSize: 13,
     lineHeight: 20,
     marginBottom: 16,
   },
   botonDiagnostico: {
-    backgroundColor: COLORES.accentVerde,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: 'center',
   },
-  botonDiagnosticoEjecutado: {
-    backgroundColor: '#0D5E3E',
-  },
   textoBotonDiagnostico: {
-    color: '#0D1117',
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -463,13 +456,11 @@ const estilos = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContenedor: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
     paddingBottom: 40,
     borderTopWidth: 1,
-    borderColor: COLORES.borde,
   },
   modalEncabezado: {
     flexDirection: 'row',
@@ -478,29 +469,23 @@ const estilos = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitulo: {
-    color: COLORES.textoPrimario,
     fontSize: 17,
     fontWeight: '700',
   },
   etiquetaCampo: {
-    color: COLORES.textoSecundario,
     fontSize: 12,
     fontWeight: '500',
     marginBottom: 6,
     marginTop: 12,
   },
   entrada: {
-    backgroundColor: COLORES.fondoPrimario,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: COLORES.borde,
-    color: COLORES.textoPrimario,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 14,
   },
   botonGuardar: {
-    backgroundColor: COLORES.accentVerde,
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
@@ -510,7 +495,6 @@ const estilos = StyleSheet.create({
     opacity: 0.6,
   },
   textoBotonGuardar: {
-    color: '#0D1117',
     fontSize: 15,
     fontWeight: '700',
   },
@@ -520,7 +504,6 @@ const estilos = StyleSheet.create({
     marginTop: 8,
   },
   textoBotonCancelar: {
-    color: COLORES.textoSecundario,
     fontSize: 14,
   },
 });

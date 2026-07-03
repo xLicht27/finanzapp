@@ -1,101 +1,95 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert
+  View, Text, StyleSheet, ScrollView, TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
-import { COLORES } from '../constants/theme';
+import { useTema } from '../context/TemaContext';
 
 const AjustesScreen = ({ navigation }) => {
   const { usuario } = useAuth();
+  const { colores, t } = useTema();
 
-  const confirmarEliminarCuenta = () => {
-    Alert.alert(
-      "Eliminar Cuenta",
-      "¿Estás seguro de que deseas eliminar tu cuenta permanentemente? Esta acción no se puede deshacer.",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive" }
-      ]
-    );
+  const eliminarCuenta = () => {
+    navigation.navigate('AjustesEliminarCuenta');
   };
 
   return (
     <ScrollView
-      style={estilos.fondoPrincipal}
+      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
       contentContainerStyle={estilos.scroll}
       showsVerticalScrollIndicator={false}
     >
       <View style={estilos.cabecera}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
-          <Ionicons name="chevron-back" size={22} color={COLORES.textoPrimario} />
+          <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={estilos.titulo}>Ajustes</Text>
+        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('ajustes')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <View style={estilos.contenedorPerfil}>
-        <View style={estilos.avatarContainer}>
-          <Ionicons name="person" size={40} color={COLORES.accentVerde} />
+      <View style={[estilos.contenedorPerfil, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+        <View style={[estilos.avatarContainer, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
+          <Ionicons name="person" size={40} color={colores.accentVerde} />
         </View>
-        <Text style={estilos.nombreUsuario}>{usuario?.nombre || 'Usuario'}</Text>
-        <Text style={estilos.correoUsuario}>{usuario?.correo || 'usuario@correo.com'}</Text>
+        <Text style={[estilos.nombreUsuario, { color: colores.textoPrimario }]}>{usuario?.nombre || 'Usuario'}</Text>
+        <Text style={[estilos.correoUsuario, { color: colores.textoSecundario }]}>{usuario?.correo || 'usuario@correo.com'}</Text>
       </View>
 
-      <Text style={estilos.tituloSeccion}>Ajustes Generales</Text>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('ajustesGenerales')}</Text>
 
-      <View style={estilos.tarjetaMenu}>
+      <View style={[estilos.tarjetaMenu, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <TouchableOpacity
-          style={estilos.itemMenu}
+          style={[estilos.itemMenu, { borderBottomColor: colores.borde }]}
           onPress={() => navigation.navigate('EditarPerfil')}
         >
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="person-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="person-outline" size={20} color={colores.accentVerde} />
           </View>
-          <Text style={estilos.textoItem}>Editar Perfil</Text>
-          <Ionicons name="chevron-forward" size={18} color={COLORES.textoSecundario} />
+          <Text style={[estilos.textoItem, { color: colores.textoPrimario }]}>{t('editarPerfil')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colores.textoSecundario} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={estilos.itemMenu}
+          style={[estilos.itemMenu, { borderBottomColor: colores.borde }]}
           onPress={() => navigation.navigate('AjustesPrivacidad')}
         >
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="lock-closed-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="lock-closed-outline" size={20} color={colores.accentVerde} />
           </View>
-          <Text style={estilos.textoItem}>Privacidad y Control</Text>
-          <Ionicons name="chevron-forward" size={18} color={COLORES.textoSecundario} />
+          <Text style={[estilos.textoItem, { color: colores.textoPrimario }]}>{t('privacidadControl')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colores.textoSecundario} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={estilos.itemMenu}
+          style={[estilos.itemMenu, { borderBottomColor: colores.borde }]}
           onPress={() => navigation.navigate('AjustesNotificaciones')}
         >
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="notifications-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="notifications-outline" size={20} color={colores.accentVerde} />
           </View>
-          <Text style={estilos.textoItem}>Notificaciones</Text>
-          <Ionicons name="chevron-forward" size={18} color={COLORES.textoSecundario} />
+          <Text style={[estilos.textoItem, { color: colores.textoPrimario }]}>{t('notificaciones')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colores.textoSecundario} />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[estilos.itemMenu, { borderBottomWidth: 0 }]}
           onPress={() => navigation.navigate('AjustesAccesibilidad')}
         >
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="eye-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="eye-outline" size={20} color={colores.accentVerde} />
           </View>
-          <Text style={estilos.textoItem}>Accesibilidad</Text>
-          <Ionicons name="chevron-forward" size={18} color={COLORES.textoSecundario} />
+          <Text style={[estilos.textoItem, { color: colores.textoPrimario }]}>{t('accesibilidad')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colores.textoSecundario} />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
-        style={estilos.botonEliminar}
-        onPress={confirmarEliminarCuenta}
+        style={[estilos.botonEliminar, { borderColor: colores.peligro }]}
+        onPress={eliminarCuenta}
       >
-        <Ionicons name="trash-outline" size={18} color={COLORES.peligro} />
-        <Text style={estilos.textoEliminar}>Eliminar mi Cuenta</Text>
+        <Ionicons name="trash-outline" size={18} color={colores.peligro} />
+        <Text style={[estilos.textoEliminar, { color: colores.peligro }]}>{t('eliminarCuenta')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -104,7 +98,6 @@ const AjustesScreen = ({ navigation }) => {
 const estilos = StyleSheet.create({
   fondoPrincipal: {
     flex: 1,
-    backgroundColor: COLORES.fondoPrimario,
   },
   scroll: {
     padding: 20,
@@ -121,52 +114,42 @@ const estilos = StyleSheet.create({
     padding: 4,
   },
   titulo: {
-    color: COLORES.textoPrimario,
     fontSize: 18,
     fontWeight: '700',
   },
   contenedorPerfil: {
     alignItems: 'center',
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     padding: 20,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
   avatarContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 2,
-    borderColor: COLORES.accentVerde,
   },
   nombreUsuario: {
-    color: COLORES.textoPrimario,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 4,
   },
   correoUsuario: {
-    color: COLORES.textoSecundario,
     fontSize: 13,
   },
   tituloSeccion: {
-    color: COLORES.textoPrimario,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 12,
     paddingLeft: 4,
   },
   tarjetaMenu: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORES.borde,
     marginBottom: 28,
     overflow: 'hidden',
   },
@@ -176,19 +159,16 @@ const estilos = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: COLORES.borde,
   },
   iconoContenedor: {
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   textoItem: {
-    color: COLORES.textoPrimario,
     fontSize: 14,
     fontWeight: '500',
     flex: 1,
@@ -202,10 +182,8 @@ const estilos = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     borderWidth: 1,
-    borderColor: COLORES.peligro,
   },
   textoEliminar: {
-    color: COLORES.peligro,
     fontSize: 14,
     fontWeight: '600',
   },

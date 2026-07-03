@@ -3,152 +3,163 @@ import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORES } from '../constants/theme';
+import { useTema } from '../context/TemaContext';
 
 const AjustesAccesibilidadScreen = ({ navigation }) => {
-  const [modoVisual, setModoVisual] = useState('Oscuro');
+  const {
+    modoVisual,
+    altoContraste,
+    idioma,
+    colores,
+    cambiarModoVisual,
+    cambiarAltoContraste,
+    cambiarIdioma,
+    t
+  } = useTema();
+
   const [nivelTexto, setNivelTexto] = useState(3);
-  const [altoContraste, setAltoContraste] = useState(false);
   const [lectorPantalla, setLectorPantalla] = useState(false);
-  const [idioma, setIdioma] = useState('Español');
   const [idiomaMenuAbierto, setIdiomaMenuAbierto] = useState(false);
 
   return (
     <ScrollView
-      style={estilos.fondoPrincipal}
+      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
       contentContainerStyle={estilos.scroll}
       showsVerticalScrollIndicator={false}
     >
       <View style={estilos.cabecera}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
-          <Ionicons name="chevron-back" size={22} color={COLORES.textoPrimario} />
+          <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={estilos.titulo}>Accesibilidad</Text>
+        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('accesibilidad')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <Text style={estilos.tituloSeccion}>Modo Visual</Text>
-      <View style={estilos.contenedorModoVisual}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('modoVisual')}</Text>
+      <View style={[estilos.contenedorModoVisual, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         {['Claro', 'Oscuro', 'Sistema'].map((modo) => (
           <TouchableOpacity
             key={modo}
             style={[
               estilos.botonModoVisual,
-              modoVisual === modo && estilos.botonModoVisualActivo
+              modoVisual === modo && [estilos.botonModoVisualActivo, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]
             ]}
-            onPress={() => setModoVisual(modo)}
+            onPress={() => cambiarModoVisual(modo)}
           >
             <Text style={[
               estilos.textoModoVisual,
-              modoVisual === modo && estilos.textoModoVisualActivo
+              { color: colores.textoSecundario },
+              modoVisual === modo && { color: colores.accentVerde }
             ]}>
-              {modo}
+              {t(modo.toLowerCase())}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={estilos.tituloSeccion}>Tamaño de Texto</Text>
-      <View style={estilos.tarjetaSlider}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('tamanoTexto')}</Text>
+      <View style={[estilos.tarjetaSlider, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={estilos.contenedorSlider}>
-          <Text style={[estilos.letraSlider, { fontSize: 12 }]}>A</Text>
-          <View style={estilos.lineaSlider}>
-            <View style={estilos.lineaProgreso} />
+          <Text style={[estilos.letraSlider, { fontSize: 12, color: colores.textoPrimario }]}>A</Text>
+          <View style={[estilos.lineaSlider, { backgroundColor: colores.borde }]}>
+            <View style={[estilos.lineaProgreso, { backgroundColor: colores.accentVerdeTenue }]} />
             <View style={estilos.puntosFila}>
               {[1, 2, 3, 4, 5].map((nivel) => (
                 <TouchableOpacity
                   key={nivel}
                   style={[
                     estilos.puntoSlider,
-                    nivelTexto === nivel && estilos.puntoSliderActivo
+                    { backgroundColor: colores.borde, borderColor: colores.textoSecundario },
+                    nivelTexto === nivel && [estilos.puntoSliderActivo, { backgroundColor: colores.accentVerde, borderColor: colores.textoPrimario }]
                   ]}
                   onPress={() => setNivelTexto(nivel)}
                 />
               ))}
             </View>
           </View>
-          <Text style={[estilos.letraSlider, { fontSize: 20 }]}>A</Text>
+          <Text style={[estilos.letraSlider, { fontSize: 20, color: colores.textoPrimario }]}>A</Text>
         </View>
       </View>
 
-      <Text style={estilos.tituloSeccion}>Ajustes de Visión</Text>
-      <View style={estilos.tarjeta}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('ajustesVision')}</Text>
+      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={[estilos.itemFila, { borderBottomWidth: 0 }]}>
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="contrast-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="contrast-outline" size={20} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoContenedor}>
-            <Text style={estilos.tituloItem}>Alto Contraste</Text>
-            <Text style={estilos.descripcionItem}>Aumenta el contraste de colores de la interfaz</Text>
+            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('altoContraste')}</Text>
+            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>{t('descripcionContraste')}</Text>
           </View>
           <Switch
             value={altoContraste}
-            onValueChange={setAltoContraste}
-            trackColor={{ false: COLORES.borde, true: COLORES.accentVerde }}
+            onValueChange={cambiarAltoContraste}
+            trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
           />
         </View>
       </View>
 
-      <Text style={estilos.tituloSeccion}>Asistencia Técnica</Text>
-      <View style={estilos.tarjeta}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('asistenciaTecnica')}</Text>
+      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={[estilos.itemFila, { borderBottomWidth: 0 }]}>
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="volume-medium-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="volume-medium-outline" size={20} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoContenedor}>
-            <Text style={estilos.tituloItem}>Lector de Pantalla</Text>
-            <Text style={estilos.descripcionItem}>Activa la descripción de voz para elementos visuales</Text>
+            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('lectorPantalla')}</Text>
+            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>{t('descripcionLector')}</Text>
           </View>
           <Switch
             value={lectorPantalla}
             onValueChange={setLectorPantalla}
-            trackColor={{ false: COLORES.borde, true: COLORES.accentVerde }}
+            trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
           />
         </View>
       </View>
 
-      <Text style={estilos.tituloSeccion}>Región e Idioma</Text>
-      <View style={estilos.tarjetaDropdown}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('regionIdioma')}</Text>
+      <View style={[estilos.tarjetaDropdown, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <TouchableOpacity
           style={estilos.itemFilaDropdown}
           onPress={() => setIdiomaMenuAbierto(!idiomaMenuAbierto)}
         >
-          <View style={estilos.iconoContenedor}>
-            <Ionicons name="language-outline" size={20} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="language-outline" size={20} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoContenedor}>
-            <Text style={estilos.tituloItem}>Idioma</Text>
+            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('idioma')}</Text>
           </View>
-          <Text style={estilos.idiomaSeleccionado}>{idioma}</Text>
+          <Text style={[estilos.idiomaSeleccionado, { color: colores.accentVerde }]}>{idioma}</Text>
           <Ionicons
             name={idiomaMenuAbierto ? "chevron-up" : "chevron-down"}
             size={18}
-            color={COLORES.textoSecundario}
+            color={colores.textoSecundario}
             style={{ marginLeft: 8 }}
           />
         </TouchableOpacity>
 
         {idiomaMenuAbierto && (
-          <View style={estilos.menuIdiomas}>
-            {['Español', 'Inglés', 'Portugués'].map((opcion) => (
+          <View style={[estilos.menuIdiomas, { backgroundColor: colores.fondoPrimario, borderTopColor: colores.borde }]}>
+            {['Español', 'Inglés'].map((opcion) => (
               <TouchableOpacity
                 key={opcion}
-                style={estilos.opcionIdioma}
+                style={[estilos.opcionIdioma, { borderBottomColor: colores.borde }]}
                 onPress={() => {
-                  setIdioma(opcion);
+                  cambiarIdioma(opcion);
                   setIdiomaMenuAbierto(false);
                 }}
               >
                 <Text style={[
                   estilos.textoOpcionIdioma,
-                  idioma === opcion && { color: COLORES.accentVerde, fontWeight: '700' }
+                  { color: colores.textoPrimario },
+                  idioma === opcion && { color: colores.accentVerde, fontWeight: '700' }
                 ]}>
                   {opcion}
                 </Text>
                 {idioma === opcion && (
-                  <Ionicons name="checkmark" size={16} color={COLORES.accentVerde} />
+                  <Ionicons name="checkmark" size={16} color={colores.accentVerde} />
                 )}
               </TouchableOpacity>
             ))}
@@ -162,7 +173,6 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
 const estilos = StyleSheet.create({
   fondoPrincipal: {
     flex: 1,
-    backgroundColor: COLORES.fondoPrimario,
   },
   scroll: {
     padding: 20,
@@ -179,12 +189,10 @@ const estilos = StyleSheet.create({
     padding: 4,
   },
   titulo: {
-    color: COLORES.textoPrimario,
     fontSize: 18,
     fontWeight: '700',
   },
   tituloSeccion: {
-    color: COLORES.textoPrimario,
     fontSize: 14,
     fontWeight: '700',
     marginBottom: 12,
@@ -193,11 +201,9 @@ const estilos = StyleSheet.create({
   },
   contenedorModoVisual: {
     flexDirection: 'row',
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     padding: 4,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
   botonModoVisual: {
     flex: 1,
@@ -206,23 +212,15 @@ const estilos = StyleSheet.create({
     borderRadius: 10,
   },
   botonModoVisualActivo: {
-    backgroundColor: COLORES.accentVerdeTenue,
     borderWidth: 1,
-    borderColor: COLORES.accentVerde,
   },
   textoModoVisual: {
-    color: COLORES.textoSecundario,
     fontSize: 13,
     fontWeight: '600',
   },
-  textoModoVisualActivo: {
-    color: COLORES.accentVerde,
-  },
   tarjetaSlider: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORES.borde,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
@@ -233,14 +231,12 @@ const estilos = StyleSheet.create({
     gap: 16,
   },
   letraSlider: {
-    color: COLORES.textoPrimario,
     fontWeight: '600',
   },
   lineaSlider: {
     flex: 1,
     height: 6,
     borderRadius: 3,
-    backgroundColor: COLORES.borde,
     justifyContent: 'center',
     position: 'relative',
   },
@@ -249,7 +245,6 @@ const estilos = StyleSheet.create({
     left: 0,
     right: 0,
     height: 4,
-    backgroundColor: COLORES.accentVerdeTenue,
   },
   puntosFila: {
     flexDirection: 'row',
@@ -261,29 +256,21 @@ const estilos = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: COLORES.borde,
     borderWidth: 2,
-    borderColor: COLORES.textoSecundario,
   },
   puntoSliderActivo: {
-    backgroundColor: COLORES.accentVerde,
-    borderColor: COLORES.textoPrimario,
     width: 18,
     height: 18,
     borderRadius: 9,
   },
   tarjeta: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORES.borde,
     overflow: 'hidden',
   },
   tarjetaDropdown: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORES.borde,
     overflow: 'hidden',
   },
   itemFila: {
@@ -302,7 +289,6 @@ const estilos = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -311,24 +297,19 @@ const estilos = StyleSheet.create({
     flex: 1,
   },
   tituloItem: {
-    color: COLORES.textoPrimario,
     fontSize: 13,
     fontWeight: '500',
   },
   descripcionItem: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
     marginTop: 2,
   },
   idiomaSeleccionado: {
-    color: COLORES.accentVerde,
     fontSize: 13,
     fontWeight: '600',
   },
   menuIdiomas: {
-    backgroundColor: '#0D1117',
     borderTopWidth: 1,
-    borderTopColor: COLORES.borde,
     paddingHorizontal: 12,
   },
   opcionIdioma: {
@@ -337,11 +318,9 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: COLORES.borde,
     paddingHorizontal: 12,
   },
   textoOpcionIdioma: {
-    color: COLORES.textoPrimario,
     fontSize: 13,
   },
 });

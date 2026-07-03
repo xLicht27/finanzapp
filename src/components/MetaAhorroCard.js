@@ -1,30 +1,31 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { COLORES } from '../constants/theme';
+import { useTema } from '../context/TemaContext';
 
 const MetaAhorroCard = ({ nombre, montoActual, montoObjetivo, fechaLimite, estado }) => {
+  const { colores } = useTema();
   const progreso = Math.min(montoActual / montoObjetivo, 1);
   const porcentaje = Math.round(progreso * 100);
 
   return (
-    <View style={estilos.contenedor}>
+    <View style={[estilos.contenedor, { backgroundColor: colores.fondoTarjeta2, borderColor: colores.borde }]}>
       <View style={estilos.encabezado}>
         <View style={estilos.infoIzquierda}>
-          <Text style={estilos.nombre}>{nombre}</Text>
-          <Text style={estilos.estado}>{estado}</Text>
+          <Text style={[estilos.nombre, { color: colores.textoPrimario }]}>{nombre}</Text>
+          <Text style={[estilos.estado, { color: colores.textoSecundario }]}>{estado}</Text>
         </View>
-        <Text style={estilos.montoActual}>${montoActual.toLocaleString()}</Text>
+        <Text style={[estilos.montoActual, { color: colores.accentVerde }]}>${montoActual.toLocaleString()}</Text>
       </View>
 
-      <View style={estilos.barraContenedor}>
-        <View style={[estilos.barraRelleno, { width: `${porcentaje}%` }]} />
+      <View style={[estilos.barraContenedor, { backgroundColor: colores.borde }]}>
+        <View style={[estilos.barraRelleno, { width: `${porcentaje}%`, backgroundColor: colores.accentVerde }]} />
       </View>
 
       <View style={estilos.piePagina}>
-        <Text style={estilos.textoMeta}>
+        <Text style={[estilos.textoMeta, { color: colores.textoSecundario }]}>
           Objetivo: ${montoObjetivo.toLocaleString()}
         </Text>
-        <Text style={estilos.textoFecha}>Plazo: {fechaLimite}</Text>
+        <Text style={[estilos.textoFecha, { color: colores.textoSecundario }]}>Plazo: {fechaLimite}</Text>
       </View>
     </View>
   );
@@ -32,12 +33,10 @@ const MetaAhorroCard = ({ nombre, montoActual, montoObjetivo, fechaLimite, estad
 
 const estilos = StyleSheet.create({
   contenedor: {
-    backgroundColor: COLORES.fondoTarjeta2,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
   encabezado: {
     flexDirection: 'row',
@@ -49,30 +48,25 @@ const estilos = StyleSheet.create({
     flex: 1,
   },
   nombre: {
-    color: COLORES.textoPrimario,
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 2,
   },
   estado: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
   },
   montoActual: {
-    color: COLORES.accentVerde,
     fontSize: 16,
     fontWeight: '700',
   },
   barraContenedor: {
     height: 5,
-    backgroundColor: COLORES.borde,
     borderRadius: 3,
     marginBottom: 8,
     overflow: 'hidden',
   },
   barraRelleno: {
     height: '100%',
-    backgroundColor: COLORES.accentVerde,
     borderRadius: 3,
   },
   piePagina: {
@@ -80,11 +74,9 @@ const estilos = StyleSheet.create({
     justifyContent: 'space-between',
   },
   textoMeta: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
   },
   textoFecha: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
   },
 });

@@ -10,6 +10,7 @@ import AjustesScreen from '../screens/AjustesScreen';
 import AjustesPrivacidadScreen from '../screens/AjustesPrivacidadScreen';
 import AjustesNotificacionesScreen from '../screens/AjustesNotificacionesScreen';
 import AjustesAccesibilidadScreen from '../screens/AjustesAccesibilidadScreen';
+import AjustesEliminarCuentaScreen from '../screens/AjustesEliminarCuentaScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { COLORES } from '../constants/theme';
 
@@ -61,6 +62,7 @@ const AppNavigator = () => (
     <Stack.Screen name="AjustesPrivacidad" component={AjustesPrivacidadScreen} />
     <Stack.Screen name="AjustesNotificaciones" component={AjustesNotificacionesScreen} />
     <Stack.Screen name="AjustesAccesibilidad" component={AjustesAccesibilidadScreen} />
+    <Stack.Screen name="AjustesEliminarCuenta" component={AjustesEliminarCuentaScreen} />
   </Stack.Navigator>
 );
 

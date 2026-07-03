@@ -3,17 +3,18 @@ import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORES } from '../constants/theme';
-
-const historialIA = [
-  { id: '1', tipo: 'PROCESADO EXITOSO', descripcion: 'Transacción detectada vía SMS (Banco XYZ): Categorización: Supermercado.', tiempo: 'Hace 2 min', color: COLORES.accentVerde },
-  { id: '2', tipo: 'ANÁLISIS EN PAUSA', descripcion: 'Acceso a Gmail delegado por configuración de usuario. Omitiendo escaneo de recibos.', tiempo: 'Hace 1 hora', color: '#F0A500' },
-  { id: '3', tipo: 'SINCRONIZACIÓN', descripcion: 'Resumen diario generado: 3 nuevas transacciones añadidas al flujo Zero-Entry.', tiempo: 'Ayer, 23:45', color: COLORES.accentVerde },
-];
+import { useTema } from '../context/TemaContext';
 
 const AjustesPrivacidadScreen = ({ navigation }) => {
+  const { colores, t } = useTema();
   const [bancoPush, setBancoPush] = useState(true);
   const [gmail, setGmail] = useState(false);
+
+  const historialIA = [
+    { id: '1', tipo: 'PROCESADO EXITOSO', descripcion: 'Transacción detectada vía SMS (Banco XYZ): Categorización: Supermercado.', tiempo: 'Hace 2 min', color: colores.accentVerde },
+    { id: '2', tipo: 'ANÁLISIS EN PAUSA', descripcion: 'Acceso a Gmail delegado por configuración de usuario. Omitiendo escaneo de recibos.', tiempo: 'Hace 1 hora', color: '#F0A500' },
+    { id: '3', tipo: 'SINCRONIZACIÓN', descripcion: 'Resumen diario generado: 3 nuevas transacciones añadidas al flujo Zero-Entry.', tiempo: 'Ayer, 23:45', color: colores.accentVerde },
+  ];
 
   const revocarPermisos = () => {
     Alert.alert(
@@ -35,83 +36,83 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={estilos.fondoPrincipal}
+      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
       contentContainerStyle={estilos.scroll}
       showsVerticalScrollIndicator={false}
     >
       <View style={estilos.cabecera}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
-          <Ionicons name="chevron-back" size={22} color={COLORES.textoPrimario} />
+          <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={estilos.titulo}>Privacidad y Control</Text>
+        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('privacidadControl')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <Text style={estilos.tituloSeccion}>Privacidad y Control</Text>
-      <Text style={estilos.descripcionSeccion}>
+      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('privacidadControl')}</Text>
+      <Text style={[estilos.descripcionSeccion, { color: colores.textoSecundario }]}>
         Gestiona cómo FinanZaap accede y procesa tu información financiera.
       </Text>
 
-      <View style={estilos.tarjeta}>
-        <Text style={estilos.etiquetaTarjeta}>Fuentes de Datos</Text>
-        <Text style={estilos.descripcionTarjeta}>
+      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+        <Text style={[estilos.etiquetaTarjeta, { color: colores.textoPrimario }]}>Fuentes de Datos</Text>
+        <Text style={[estilos.descripcionTarjeta, { color: colores.textoSecundario }]}>
           Controla los canales desde donde la IA extrae información transaccional automáticamente.
         </Text>
 
-        <View style={estilos.itemFuente}>
-          <View style={estilos.iconoFuente}>
-            <Ionicons name="phone-portrait-outline" size={18} color={COLORES.accentVerde} />
+        <View style={[estilos.itemFuente, { borderBottomColor: colores.borde }]}>
+          <View style={[estilos.iconoFuente, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="phone-portrait-outline" size={18} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoFuente}>
-            <Text style={estilos.nombreFuente}>Notificaciones de Banco</Text>
-            <Text style={estilos.descripcionFuente}>Lectura de SMS y Push</Text>
+            <Text style={[estilos.nombreFuente, { color: colores.textoPrimario }]}>Notificaciones de Banco</Text>
+            <Text style={[estilos.descripcionFuente, { color: colores.textoSecundario }]}>Lectura de SMS y Push</Text>
           </View>
           <Switch
             value={bancoPush}
             onValueChange={setBancoPush}
-            trackColor={{ false: COLORES.borde, true: COLORES.accentVerde }}
+            trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
           />
         </View>
 
         <View style={[estilos.itemFuente, { borderBottomWidth: 0 }]}>
-          <View style={estilos.iconoFuente}>
-            <Ionicons name="mail-outline" size={18} color={COLORES.accentVerde} />
+          <View style={[estilos.iconoFuente, { backgroundColor: colores.accentVerdeTenue }]}>
+            <Ionicons name="mail-outline" size={18} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoFuente}>
-            <Text style={estilos.nombreFuente}>Gmail</Text>
-            <Text style={estilos.descripcionFuente}>Análisis de recibos y facturas</Text>
+            <Text style={[estilos.nombreFuente, { color: colores.textoPrimario }]}>Gmail</Text>
+            <Text style={[estilos.descripcionFuente, { color: colores.textoSecundario }]}>Análisis de recibos y facturas</Text>
           </View>
           <Switch
             value={gmail}
             onValueChange={setGmail}
-            trackColor={{ false: COLORES.borde, true: COLORES.accentVerde }}
+            trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
           />
         </View>
       </View>
 
-      <View style={estilos.tarjetaPeligro}>
+      <View style={[estilos.tarjetaPeligro, { borderColor: '#F0A500' }]}>
         <View style={estilos.encabezadoPeligro}>
           <Ionicons name="warning-outline" size={16} color="#F0A500" />
           <Text style={estilos.tituloPeligro}>Zona de Peligro</Text>
         </View>
-        <Text style={estilos.descripcionPeligro}>
+        <Text style={[estilos.descripcionPeligro, { color: colores.textoSecundario }]}>
           Esta acción eliminará todos los accesos de la IA a tus fuentes de datos. La aplicación dejará de registrar transacciones automáticamente.
         </Text>
-        <TouchableOpacity style={estilos.botonRevocar} onPress={revocarPermisos}>
-          <Text style={estilos.textoRevocar}>REVOCAR TODOS LOS PERMISOS</Text>
+        <TouchableOpacity style={[estilos.botonRevocar, { borderColor: colores.peligro }]} onPress={revocarPermisos}>
+          <Text style={[estilos.textoRevocar, { color: colores.peligro }]}>REVOCAR TODOS LOS PERMISOS</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={estilos.tarjeta}>
+      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={estilos.encabezadoHistorial}>
-          <Text style={estilos.etiquetaTarjeta}>Historial de IA</Text>
-          <View style={estilos.badgeLog}>
-            <Text style={estilos.textoLog}>Log Activo</Text>
+          <Text style={[estilos.etiquetaTarjeta, { color: colores.textoPrimario }]}>Historial de IA</Text>
+          <View style={[estilos.badgeLog, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
+            <Text style={[estilos.textoLog, { color: colores.accentVerde }]}>Log Activo</Text>
           </View>
         </View>
-        <Text style={estilos.descripcionTarjeta}>Registro de procesamiento de datos en tiempo real.</Text>
+        <Text style={[estilos.descripcionTarjeta, { color: colores.textoSecundario }]}>Registro de procesamiento de datos en tiempo real.</Text>
 
         {historialIA.map((item) => (
           <View key={item.id} style={estilos.itemHistorial}>
@@ -119,9 +120,9 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
             <View style={estilos.infoHistorial}>
               <View style={estilos.encabezadoItem}>
                 <Text style={[estilos.tipoHistorial, { color: item.color }]}>{item.tipo}</Text>
-                <Text style={estilos.tiempoHistorial}>{item.tiempo}</Text>
+                <Text style={[estilos.tiempoHistorial, { color: colores.textoSecundario }]}>{item.tiempo}</Text>
               </View>
-              <Text style={estilos.descripcionHistorial}>{item.descripcion}</Text>
+              <Text style={[estilos.descripcionHistorial, { color: colores.textoSecundario }]}>{item.descripcion}</Text>
             </View>
           </View>
         ))}
@@ -133,7 +134,6 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
 const estilos = StyleSheet.create({
   fondoPrincipal: {
     flex: 1,
-    backgroundColor: COLORES.fondoPrimario,
   },
   scroll: {
     padding: 20,
@@ -150,38 +150,31 @@ const estilos = StyleSheet.create({
     padding: 4,
   },
   titulo: {
-    color: COLORES.textoPrimario,
     fontSize: 18,
     fontWeight: '700',
   },
   tituloSeccion: {
-    color: COLORES.textoPrimario,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 6,
   },
   descripcionSeccion: {
-    color: COLORES.textoSecundario,
     fontSize: 13,
     lineHeight: 20,
     marginBottom: 20,
   },
   tarjeta: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
   etiquetaTarjeta: {
-    color: COLORES.textoPrimario,
     fontSize: 15,
     fontWeight: '600',
     marginBottom: 4,
   },
   descripcionTarjeta: {
-    color: COLORES.textoSecundario,
     fontSize: 12,
     lineHeight: 18,
     marginBottom: 14,
@@ -191,13 +184,11 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: COLORES.borde,
   },
   iconoFuente: {
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: COLORES.accentVerdeTenue,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -206,12 +197,10 @@ const estilos = StyleSheet.create({
     flex: 1,
   },
   nombreFuente: {
-    color: COLORES.textoPrimario,
     fontSize: 13,
     fontWeight: '500',
   },
   descripcionFuente: {
-    color: COLORES.textoSecundario,
     fontSize: 11,
     marginTop: 2,
   },
@@ -221,7 +210,6 @@ const estilos = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#F0A500',
   },
   encabezadoPeligro: {
     flexDirection: 'row',
@@ -235,20 +223,17 @@ const estilos = StyleSheet.create({
     fontWeight: '600',
   },
   descripcionPeligro: {
-    color: COLORES.textoSecundario,
     fontSize: 12,
     lineHeight: 18,
     marginBottom: 14,
   },
   botonRevocar: {
     borderWidth: 1,
-    borderColor: COLORES.peligro,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: 'center',
   },
   textoRevocar: {
-    color: COLORES.peligro,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -260,15 +245,12 @@ const estilos = StyleSheet.create({
     marginBottom: 4,
   },
   badgeLog: {
-    backgroundColor: COLORES.accentVerdeTenue,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: COLORES.accentVerde,
   },
   textoLog: {
-    color: COLORES.accentVerde,
     fontSize: 10,
     fontWeight: '600',
   },
@@ -297,11 +279,9 @@ const estilos = StyleSheet.create({
     letterSpacing: 0.5,
   },
   tiempoHistorial: {
-    color: COLORES.textoSecundario,
     fontSize: 10,
   },
   descripcionHistorial: {
-    color: COLORES.textoSecundario,
     fontSize: 12,
     lineHeight: 17,
   },

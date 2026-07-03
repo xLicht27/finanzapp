@@ -4,10 +4,10 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
+import { useTema } from '../context/TemaContext';
 import TransaccionItem from '../components/TransaccionItem';
 import PresupuestoBadge from '../components/PresupuestoBadge';
 import useTipoCambio from '../hooks/useTipoCambio';
-import { COLORES } from '../constants/theme';
 
 const CLAVE_TRANSACCIONES = 'finanzaap_transacciones';
 
@@ -19,6 +19,7 @@ const transaccionesIniciales = [
 
 const HomeScreen = () => {
   const { usuario } = useAuth();
+  const { colores, t } = useTema();
   const { tasa, cargando: cargandoApi, refrescar } = useTipoCambio('USD');
   const [transacciones, setTransacciones] = useState([]);
   const [refrescando, setRefrescando] = useState(false);
@@ -27,10 +28,10 @@ const HomeScreen = () => {
   useEffect(() => {
     cargarTransacciones();
     const timer = setTimeout(() => {
-      setColorSpinner(COLORES.accentVerde);
+      setColorSpinner(colores.accentVerde);
     }, 150);
     return () => clearTimeout(timer);
-  }, []);
+  }, [colores.accentVerde]);
 
   const cargarTransacciones = async () => {
     try {
@@ -56,7 +57,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView
-      style={estilos.fondoPrincipal}
+      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
       contentContainerStyle={estilos.scroll}
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -65,12 +66,12 @@ const HomeScreen = () => {
           onRefresh={alRefrescar}
           tintColor={colorSpinner}
           colors={[colorSpinner]}
-          progressBackgroundColor={COLORES.fondoTarjeta}
+          progressBackgroundColor={colores.fondoTarjeta}
         />
       }
     >
-      <Text style={estilos.saludo}>
-        Hola, {usuario?.nombre?.split(' ')[0] || 'Usuario'} 👋
+      <Text style={[estilos.saludo, { color: colores.textoPrimario }]}>
+        {t('hola')}, {usuario?.nombre?.split(' ')[0] || 'Usuario'} 👋
       </Text>
 
       <PresupuestoBadge
@@ -80,21 +81,21 @@ const HomeScreen = () => {
       />
 
       {tasa && (
-        <View style={estilos.bannerApi}>
-          <Text style={estilos.textoBannerApi}>
-            Tipo de cambio USD/PEN: S/. {tasa?.toFixed(3)}
+        <View style={[estilos.bannerApi, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
+          <Text style={[estilos.textoBannerApi, { color: colores.accentVerde }]}>
+            {t('tipoCambio')} {tasa?.toFixed(3)}
           </Text>
         </View>
       )}
 
       <View style={estilos.encabezadoSeccion}>
-        <Text style={estilos.tituloSeccion}>Actividad Reciente</Text>
+        <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('actividadReciente')}</Text>
         <TouchableOpacity>
-          <Text style={estilos.verTodo}>Ver todo</Text>
+          <Text style={[estilos.verTodo, { color: colores.accentVerde }]}>{t('verTodo')}</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={estilos.tarjeta}>
+      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         {transacciones.map((item) => (
           <TransaccionItem
             key={item.id}
@@ -112,29 +113,24 @@ const HomeScreen = () => {
 const estilos = StyleSheet.create({
   fondoPrincipal: {
     flex: 1,
-    backgroundColor: COLORES.fondoPrimario,
   },
   scroll: {
     padding: 20,
     paddingBottom: 30,
   },
   saludo: {
-    color: COLORES.textoPrimario,
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 20,
   },
   bannerApi: {
-    backgroundColor: COLORES.accentVerdeTenue,
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: COLORES.accentVerde,
     alignItems: 'center',
   },
   textoBannerApi: {
-    color: COLORES.accentVerde,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -145,20 +141,16 @@ const estilos = StyleSheet.create({
     marginBottom: 12,
   },
   tituloSeccion: {
-    color: COLORES.textoPrimario,
     fontSize: 16,
     fontWeight: '600',
   },
   verTodo: {
-    color: COLORES.accentVerde,
     fontSize: 13,
   },
   tarjeta: {
-    backgroundColor: COLORES.fondoTarjeta,
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    borderColor: COLORES.borde,
   },
 });
 
