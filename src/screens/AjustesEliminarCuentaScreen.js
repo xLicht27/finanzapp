@@ -16,6 +16,7 @@ const AjustesEliminarCuentaScreen = ({ navigation }) => {
   const [digito3, setDigito3] = useState('');
   const [digito4, setDigito4] = useState('');
   const [errorVerificacion, setErrorVerificacion] = useState(false);
+  const [intentosCount, setIntentosCount] = useState(0);
 
   const ref1 = useRef(null);
   const ref2 = useRef(null);
@@ -54,16 +55,26 @@ const AjustesEliminarCuentaScreen = ({ navigation }) => {
 
   const verificarCodigo = () => {
     const codigoCompleto = `${digito1}${digito2}${digito3}${digito4}`;
-    if (codigoCompleto === '1234') {
-      setErrorVerificacion(false);
-      setPaso(4);
-    } else {
+    if (intentosCount === 0) {
+      setIntentosCount(1);
       setErrorVerificacion(true);
       setDigito1('');
       setDigito2('');
       setDigito3('');
       setDigito4('');
       ref1.current?.focus();
+    } else {
+      if (codigoCompleto === '1234') {
+        setErrorVerificacion(false);
+        setPaso(4);
+      } else {
+        setErrorVerificacion(true);
+        setDigito1('');
+        setDigito2('');
+        setDigito3('');
+        setDigito4('');
+        ref1.current?.focus();
+      }
     }
   };
 
@@ -163,7 +174,7 @@ const AjustesEliminarCuentaScreen = ({ navigation }) => {
               />
             </View>
 
-            <TouchableOpacity style={estilos.botonVerificar} onPress={verificarCodigo}>
+            <TouchableOpacity style={[estilos.botonVerificar, { backgroundColor: colores.accentVerde }]} onPress={verificarCodigo}>
               <Text style={[estilos.textoBotonVerificar, { color: colores.fondoPrimario }]}>Verificar Código</Text>
             </TouchableOpacity>
 
@@ -347,7 +358,6 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   botonVerificar: {
-    backgroundColor: '#00D4A3',
     width: '100%',
     paddingVertical: 14,
     borderRadius: 10,
