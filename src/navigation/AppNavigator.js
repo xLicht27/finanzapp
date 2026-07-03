@@ -7,6 +7,10 @@ import HomeScreen from '../screens/HomeScreen';
 import ReportesScreen from '../screens/ReportesScreen';
 import ServiciosScreen from '../screens/ServiciosScreen';
 import AjustesScreen from '../screens/AjustesScreen';
+import AjustesPrivacidadScreen from '../screens/AjustesPrivacidadScreen';
+import AjustesNotificacionesScreen from '../screens/AjustesNotificacionesScreen';
+import AjustesAccesibilidadScreen from '../screens/AjustesAccesibilidadScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import { COLORES } from '../constants/theme';
 
 const Tab = createBottomTabNavigator();
@@ -53,6 +57,10 @@ const AppNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Principal" component={TabNavigator} />
     <Stack.Screen name="Ajustes" component={AjustesScreen} />
+    <Stack.Screen name="EditarPerfil" component={ProfileScreen} />
+    <Stack.Screen name="AjustesPrivacidad" component={AjustesPrivacidadScreen} />
+    <Stack.Screen name="AjustesNotificaciones" component={AjustesNotificacionesScreen} />
+    <Stack.Screen name="AjustesAccesibilidad" component={AjustesAccesibilidadScreen} />
   </Stack.Navigator>
 );
 
