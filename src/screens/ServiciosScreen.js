@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Animated,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Animated } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { serviciosEstilos } from '../styles/ServiciosScreenEstilos';
 import MetaAhorroCard from '../components/MetaAhorroCard';
 
 const CLAVE_METAS = 'finanzaap_metas';
@@ -19,6 +18,9 @@ const metasIniciales = [
 
 const ServiciosScreen = () => {
   const { colores, t } = useTema();
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = serviciosEstilos(colores);
+
   const [metas, setMetas] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [metaSeleccionada, setMetaSeleccionada] = useState(null);
@@ -178,13 +180,13 @@ const ServiciosScreen = () => {
   return (
     <>
       <ScrollView
-        style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-        contentContainerStyle={estilos.scroll}
+        style={estilosComunes.fondoPrincipal}
+        contentContainerStyle={estilosComunes.scroll}
         showsVerticalScrollIndicator={false}
       >
         <Text style={[estilos.etiquetaSeccion, { color: colores.textoSecundario }]}>{t('serviciosUtiles')}</Text>
 
-        <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+        <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
           <View style={estilos.encabezadoMetas}>
             <View style={[estilos.iconoMetasContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
               <Ionicons name="flag-outline" size={20} color={colores.accentVerde} />
@@ -327,185 +329,5 @@ const ServiciosScreen = () => {
     </>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingBottom: 30,
-  },
-  etiquetaSeccion: {
-    fontSize: 10,
-    fontWeight: '600',
-    letterSpacing: 1.5,
-    marginBottom: 14,
-  },
-  tarjeta: {
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  encabezadoMetas: {
-    marginBottom: 16,
-  },
-  filaSubtitulo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
-  },
-  iconoMetasContenedor: {
-    width: 42,
-    height: 42,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  tituloMetas: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  subtituloMetas: {
-    fontSize: 11,
-  },
-  contenedorAcciones: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    borderRadius: 12,
-    overflow: 'hidden',
-    gap: 2,
-  },
-  accionEditar: {
-    width: 72,
-    height: '100%',
-    backgroundColor: '#1A6B4A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 4,
-    borderRadius: 10,
-  },
-  accionEliminar: {
-    width: 72,
-    height: '100%',
-    backgroundColor: '#7B1F1F',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 4,
-    borderRadius: 10,
-  },
-  textoAccion: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  botonAgregarMeta: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    borderWidth: 1,
-    marginTop: 4,
-  },
-  tarjetaAI: {
-    borderRadius: 14,
-    padding: 18,
-    borderWidth: 1,
-  },
-  encabezadoAI: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  tituloAI: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.5,
-  },
-  tituloAnalisis: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  descripcionAI: {
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  botonDiagnostico: {
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  textoBotonDiagnostico: {
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    justifyContent: 'flex-end',
-  },
-  modalContenedor: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 24,
-    paddingBottom: 40,
-    borderTopWidth: 1,
-  },
-  modalEncabezado: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  modalTitulo: {
-    fontSize: 17,
-    fontWeight: '700',
-  },
-  etiquetaCampo: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginBottom: 6,
-    marginTop: 12,
-  },
-  entrada: {
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 14,
-  },
-  botonGuardar: {
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  botonGuardando: {
-    opacity: 0.6,
-  },
-  textoBotonGuardar: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  botonCancelar: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  textoBotonCancelar: {
-    fontSize: 14,
-  },
-});
 
 export default ServiciosScreen;

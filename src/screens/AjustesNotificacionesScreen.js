@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { notificacionesEstilos } from '../styles/AjustesNotificacionesScreenEstilos';
 
 const AjustesNotificacionesScreen = ({ navigation }) => {
   const { colores, t } = useTema();
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = notificacionesEstilos(colores);
+
   const [notificaciones, setNotificaciones] = useState(true);
   const [promociones, setPromociones] = useState(false);
   const [gastosExcesivos, setGastosExcesivos] = useState(true);
@@ -14,31 +17,31 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-      contentContainerStyle={estilos.scroll}
+      style={estilosComunes.fondoPrincipal}
+      contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <View style={estilos.cabecera}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
+      <View style={estilosComunes.cabecera}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={estilosComunes.botonVolver}>
           <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('notificaciones')}</Text>
+        <Text style={estilosComunes.titulo}>{t('notificaciones')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>Preferencias de Alertas</Text>
+      <Text style={estilosComunes.tituloSeccion}>Preferencias de Alertas</Text>
       <Text style={[estilos.descripcionSeccion, { color: colores.textoSecundario }]}>
         Elige qué notificaciones deseas recibir en tu dispositivo móvil.
       </Text>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
-        <View style={[estilos.itemFila, { borderBottomColor: colores.borde }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+      <View style={estilosComunes.tarjetaDropdown}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 1, borderBottomColor: colores.borde }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="notifications-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>Notificaciones generales</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>Activar o desactivar avisos principales</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>Notificaciones generales</Text>
+            <Text style={estilosComunes.descripcionItem}>Activar o desactivar avisos principales</Text>
           </View>
           <Switch
             value={notificaciones}
@@ -48,13 +51,13 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={[estilos.itemFila, { borderBottomColor: colores.borde }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 1, borderBottomColor: colores.borde }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="pricetag-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>Promociones</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>Descuentos y beneficios de aliados</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>Promociones</Text>
+            <Text style={estilosComunes.descripcionItem}>Descuentos y beneficios de aliados</Text>
           </View>
           <Switch
             value={promociones}
@@ -65,13 +68,13 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={[estilos.itemFila, { borderBottomColor: colores.borde }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 1, borderBottomColor: colores.borde }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="trending-up-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>Gastos excesivos</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>Alertas cuando superas presupuestos diarios</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>Gastos excesivos</Text>
+            <Text style={estilosComunes.descripcionItem}>Alertas cuando superas presupuestos diarios</Text>
           </View>
           <Switch
             value={gastosExcesivos}
@@ -82,13 +85,13 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={[estilos.itemFila, { borderBottomWidth: 0 }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 0 }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="document-text-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>Nuevas políticas</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>Cambios en términos de condiciones legales</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>Nuevas políticas</Text>
+            <Text style={estilosComunes.descripcionItem}>Cambios en términos de condiciones legales</Text>
           </View>
           <Switch
             value={nuevasPoliticas}
@@ -102,70 +105,5 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
     </ScrollView>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingTop: 50,
-    paddingBottom: 40,
-  },
-  cabecera: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  botonVolver: {
-    padding: 4,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  tituloSeccion: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-  descripcionSeccion: {
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: 20,
-  },
-  tarjeta: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  itemFila: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-  },
-  iconoContenedor: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  infoContenedor: {
-    flex: 1,
-  },
-  tituloItem: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  descripcionItem: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-});
 
 export default AjustesNotificacionesScreen;

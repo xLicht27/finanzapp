@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
+import { transaccionItemEstilos } from '../styles/componentes';
 
 const iconosPorCategoria = {
   comida: 'restaurant-outline',
@@ -14,12 +15,13 @@ const iconosPorCategoria = {
 
 const TransaccionItem = ({ nombre, monto, categoria, fecha }) => {
   const { colores } = useTema();
+  const estilos = transaccionItemEstilos(colores);
   const esGasto = monto < 0;
   const icono = iconosPorCategoria[categoria] || iconosPorCategoria.otro;
 
   return (
     <View style={[estilos.contenedor, { borderBottomColor: colores.borde }]}>
-      <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+      <View style={[estilos.icono, { backgroundColor: colores.accentVerdeTenue }]}>
         <Ionicons name={icono} size={20} color={colores.accentVerde} />
       </View>
       <View style={estilos.info}>
@@ -32,37 +34,5 @@ const TransaccionItem = ({ nombre, monto, categoria, fecha }) => {
     </View>
   );
 };
-
-const estilos = StyleSheet.create({
-  contenedor: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  iconoContenedor: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  info: {
-    flex: 1,
-  },
-  nombre: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  fecha: {
-    fontSize: 12,
-  },
-  monto: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
 
 export default TransaccionItem;

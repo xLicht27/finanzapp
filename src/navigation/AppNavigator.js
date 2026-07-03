@@ -12,47 +12,51 @@ import AjustesNotificacionesScreen from '../screens/AjustesNotificacionesScreen'
 import AjustesAccesibilidadScreen from '../screens/AjustesAccesibilidadScreen';
 import AjustesEliminarCuentaScreen from '../screens/AjustesEliminarCuentaScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import { COLORES } from '../constants/theme';
+import { useTema } from '../context/TemaContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const CabeceraPrincipal = ({ navigation, titulo }) => (
-  <View style={estilos.cabecera}>
+const CabeceraPrincipal = ({ navigation, colores }) => (
+  <View style={[estilos.cabecera, { backgroundColor: colores.fondoPrimario, borderBottomColor: colores.borde }]}>
     <Image
       source={require('../../assets/logo.png')}
       style={estilos.logo}
       resizeMode="contain"
     />
     <TouchableOpacity onPress={() => navigation.navigate('Ajustes')} style={estilos.botonAjustes}>
-      <Ionicons name="settings-outline" size={22} color={COLORES.textoSecundario} />
+      <Ionicons name="settings-outline" size={22} color={colores.textoSecundario} />
     </TouchableOpacity>
   </View>
 );
 
-const TabNavigator = () => (
-  <Tab.Navigator
-    screenOptions={({ route, navigation }) => ({
-      header: () => <CabeceraPrincipal navigation={navigation} titulo={route.name} />,
-      tabBarStyle: estilos.barraTab,
-      tabBarActiveTintColor: COLORES.accentVerde,
-      tabBarInactiveTintColor: COLORES.textoSecundario,
-      tabBarLabelStyle: estilos.etiquetaTab,
-      tabBarIcon: ({ color, size }) => {
-        const iconos = {
-          Inicio: 'home-outline',
-          Reportes: 'bar-chart-outline',
-          Servicios: 'grid-outline',
-        };
-        return <Ionicons name={iconos[route.name]} size={22} color={color} />;
-      },
-    })}
-  >
-    <Tab.Screen name="Inicio" component={HomeScreen} />
-    <Tab.Screen name="Reportes" component={ReportesScreen} />
-    <Tab.Screen name="Servicios" component={ServiciosScreen} />
-  </Tab.Navigator>
-);
+const TabNavigator = () => {
+  const { colores } = useTema();
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route, navigation }) => ({
+        header: () => <CabeceraPrincipal navigation={navigation} colores={colores} />,
+        tabBarStyle: [estilos.barraTab, { backgroundColor: colores.fondoTarjeta, borderTopColor: colores.borde }],
+        tabBarActiveTintColor: colores.accentVerde,
+        tabBarInactiveTintColor: colores.textoSecundario,
+        tabBarLabelStyle: estilos.etiquetaTab,
+        tabBarIcon: ({ color, size }) => {
+          const iconos = {
+            Inicio: 'home-outline',
+            Reportes: 'bar-chart-outline',
+            Servicios: 'grid-outline',
+          };
+          return <Ionicons name={iconos[route.name]} size={22} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Inicio" component={HomeScreen} />
+      <Tab.Screen name="Reportes" component={ReportesScreen} />
+      <Tab.Screen name="Servicios" component={ServiciosScreen} />
+    </Tab.Navigator>
+  );
+};
 
 const AppNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -71,12 +75,10 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: COLORES.fondoPrimario,
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: COLORES.borde,
   },
   logo: {
     width: 34,
@@ -86,8 +88,6 @@ const estilos = StyleSheet.create({
     padding: 4,
   },
   barraTab: {
-    backgroundColor: COLORES.fondoTarjeta,
-    borderTopColor: COLORES.borde,
     borderTopWidth: 1,
     height: 60,
     paddingBottom: 8,

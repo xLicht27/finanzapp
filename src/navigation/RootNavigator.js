@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useTema } from '../context/TemaContext';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import { COLORES } from '../constants/theme';
 
 const RootNavigator = () => {
   const { usuario, cargando } = useAuth();
+  const { colores } = useTema();
 
   if (cargando) {
     return (
-      <View style={estilos.cargando}>
-        <ActivityIndicator size="large" color={COLORES.accentVerde} />
+      <View style={[estilos.cargando, { backgroundColor: colores.fondoPrimario }]}>
+        <ActivityIndicator size="large" color={colores.accentVerde} />
       </View>
     );
   }
@@ -24,7 +25,6 @@ const estilos = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORES.fondoPrimario,
   },
 });
 

@@ -1,52 +1,34 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { COLORES } from '../constants/theme';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { useTema } from '../context/TemaContext';
+import { customButtonEstilos } from '../styles/componentes';
 
 const CustomButton = ({ titulo, alPresionar, variante = 'primario', cargando = false }) => {
+  const { colores } = useTema();
+  const estilos = customButtonEstilos(colores);
+
   return (
     <TouchableOpacity
-      style={[estilos.boton, estilos[variante]]}
+      style={[
+        estilos.boton,
+        variante === 'primario' ? estilos.botonPrimario : estilos.botonSecundario
+      ]}
       onPress={alPresionar}
       activeOpacity={0.8}
       disabled={cargando}
     >
       {cargando ? (
-        <ActivityIndicator color="#FFFFFF" />
+        <ActivityIndicator color={colores.fondoPrimario} />
       ) : (
-        <Text style={[estilos.texto, variante === 'secundario' && estilos.textoSecundario]}>
+        <Text style={[
+          estilos.texto,
+          variante === 'primario' ? { color: colores.fondoPrimario } : { color: colores.textoSecundario }
+        ]}>
           {titulo}
         </Text>
       )}
     </TouchableOpacity>
   );
 };
-
-const estilos = StyleSheet.create({
-  boton: {
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 10,
-  },
-  primario: {
-    backgroundColor: COLORES.accentVerde,
-  },
-  secundario: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: COLORES.borde,
-  },
-  texto: {
-    color: '#0D1117',
-    fontSize: 15,
-    fontWeight: '700',
-    letterSpacing: 0.3,
-  },
-  textoSecundario: {
-    color: COLORES.textoSecundario,
-  },
-});
 
 export default CustomButton;

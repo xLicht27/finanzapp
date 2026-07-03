@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useTema } from '../context/TemaContext';
 import CategoriaBar from '../components/CategoriaBar';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { reportesEstilos } from '../styles/ReportesScreenEstilos';
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
 
 const ReportesScreen = () => {
   const { colores, t } = useTema();
   const [mesSeleccionado, setMesSeleccionado] = useState('May');
+
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = reportesEstilos(colores);
 
   const mesesTraducidos = t('meses');
   const indiceSeleccionado = MESES.indexOf(mesSeleccionado);
@@ -20,8 +25,8 @@ const ReportesScreen = () => {
 
   return (
     <ScrollView
-      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-      contentContainerStyle={estilos.scroll}
+      style={estilosComunes.fondoPrincipal}
+      contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
     >
       <View style={[estilos.selectorMes, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
@@ -45,7 +50,7 @@ const ReportesScreen = () => {
         ))}
       </View>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={estilos.encabezadoTarjeta}>
           <Text style={[estilos.subtituloTarjeta, { color: colores.textoSecundario }]}>{t('ahorroMesAnterior')}</Text>
           <View style={[estilos.badge, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
@@ -56,8 +61,8 @@ const ReportesScreen = () => {
         <Text style={[estilos.textoIncremento, { color: colores.accentVerde }]}>↑ 12.5% {t('incremento')}</Text>
       </View>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
-        <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('gastosCategoria')}</Text>
+      <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+        <Text style={[estilosComunes.tituloItem, { fontSize: 15, fontWeight: '600', marginBottom: 14 }]}>{t('gastosCategoria')}</Text>
 
         <View style={estilos.barrasGrafico}>
           {[65, 42, 88, 55, 30].map((altura, i) => (
@@ -68,7 +73,7 @@ const ReportesScreen = () => {
         </View>
 
         <View style={[estilos.separador, { backgroundColor: colores.borde }]} />
-        <Text style={[estilos.tituloSeccion, { marginTop: 4, color: colores.textoPrimario }]}>{t('desgloseDetallado')}</Text>
+        <Text style={[estilosComunes.tituloItem, { fontSize: 15, fontWeight: '600', marginTop: 4 }]}>{t('desgloseDetallado')}</Text>
         <View style={{ marginTop: 12 }}>
           {categorias.map((cat) => (
             <CategoriaBar
@@ -85,92 +90,5 @@ const ReportesScreen = () => {
     </ScrollView>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingBottom: 30,
-  },
-  selectorMes: {
-    flexDirection: 'row',
-    borderRadius: 10,
-    padding: 4,
-    marginBottom: 20,
-    borderWidth: 1,
-  },
-  botonMes: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: 7,
-  },
-  textoMes: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  tarjeta: {
-    borderRadius: 14,
-    padding: 18,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  encabezadoTarjeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  subtituloTarjeta: {
-    fontSize: 13,
-  },
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  textoBadge: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  montoAhorro: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  textoIncremento: {
-    fontSize: 13,
-  },
-  tituloSeccion: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 14,
-  },
-  barrasGrafico: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    height: 100,
-    marginBottom: 16,
-  },
-  columnaBarra: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginHorizontal: 4,
-  },
-  barra: {
-    width: '70%',
-    borderRadius: 4,
-    opacity: 0.8,
-  },
-  separador: {
-    height: 1,
-    marginVertical: 14,
-  },
-});
 
 export default ReportesScreen;

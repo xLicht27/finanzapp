@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
 import { useTema } from '../context/TemaContext';
 import TransaccionItem from '../components/TransaccionItem';
 import PresupuestoBadge from '../components/PresupuestoBadge';
 import useTipoCambio from '../hooks/useTipoCambio';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { homeEstilos } from '../styles/HomeScreenEstilos';
 
 const CLAVE_TRANSACCIONES = 'finanzaap_transacciones';
 
@@ -24,6 +24,9 @@ const HomeScreen = () => {
   const [transacciones, setTransacciones] = useState([]);
   const [refrescando, setRefrescando] = useState(false);
   const [colorSpinner, setColorSpinner] = useState('transparent');
+
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = homeEstilos(colores);
 
   useEffect(() => {
     cargarTransacciones();
@@ -57,8 +60,8 @@ const HomeScreen = () => {
 
   return (
     <ScrollView
-      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-      contentContainerStyle={estilos.scroll}
+      style={estilosComunes.fondoPrincipal}
+      contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -89,13 +92,13 @@ const HomeScreen = () => {
       )}
 
       <View style={estilos.encabezadoSeccion}>
-        <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('actividadReciente')}</Text>
+        <Text style={[estilosComunes.tituloItem, { fontSize: 16, fontWeight: '600' }]}>{t('actividadReciente')}</Text>
         <TouchableOpacity>
           <Text style={[estilos.verTodo, { color: colores.accentVerde }]}>{t('verTodo')}</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         {transacciones.map((item) => (
           <TransaccionItem
             key={item.id}
@@ -109,49 +112,5 @@ const HomeScreen = () => {
     </ScrollView>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingBottom: 30,
-  },
-  saludo: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 20,
-  },
-  bannerApi: {
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  textoBannerApi: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  encabezadoSeccion: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  tituloSeccion: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  verTodo: {
-    fontSize: 13,
-  },
-  tarjeta: {
-    borderRadius: 14,
-    padding: 16,
-    borderWidth: 1,
-  },
-});
 
 export default HomeScreen;

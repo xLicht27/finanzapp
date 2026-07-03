@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { accesibilidadEstilos } from '../styles/AjustesAccesibilidadScreenEstilos';
 
 const AjustesAccesibilidadScreen = ({ navigation }) => {
   const {
@@ -17,25 +17,28 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
     t
   } = useTema();
 
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = accesibilidadEstilos(colores);
+
   const [nivelTexto, setNivelTexto] = useState(3);
   const [lectorPantalla, setLectorPantalla] = useState(false);
   const [idiomaMenuAbierto, setIdiomaMenuAbierto] = useState(false);
 
   return (
     <ScrollView
-      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-      contentContainerStyle={estilos.scroll}
+      style={estilosComunes.fondoPrincipal}
+      contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <View style={estilos.cabecera}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
+      <View style={estilosComunes.cabecera}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={estilosComunes.botonVolver}>
           <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('accesibilidad')}</Text>
+        <Text style={estilosComunes.titulo}>{t('accesibilidad')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('modoVisual')}</Text>
+      <Text style={estilosComunes.tituloSeccion}>{t('modoVisual')}</Text>
       <View style={[estilos.contenedorModoVisual, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         {['Claro', 'Oscuro', 'Sistema'].map((modo) => (
           <TouchableOpacity
@@ -57,7 +60,7 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
         ))}
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('tamanoTexto')}</Text>
+      <Text style={estilosComunes.tituloSeccion}>{t('tamanoTexto')}</Text>
       <View style={[estilos.tarjetaSlider, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={estilos.contenedorSlider}>
           <Text style={[estilos.letraSlider, { fontSize: 12, color: colores.textoPrimario }]}>A</Text>
@@ -81,15 +84,15 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('ajustesVision')}</Text>
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
-        <View style={[estilos.itemFila, { borderBottomWidth: 0 }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+      <Text style={estilosComunes.tituloSeccion}>{t('ajustesVision')}</Text>
+      <View style={estilosComunes.tarjeta}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="contrast-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('altoContraste')}</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>{t('descripcionContraste')}</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>{t('altoContraste')}</Text>
+            <Text style={estilosComunes.descripcionItem}>{t('descripcionContraste')}</Text>
           </View>
           <Switch
             value={altoContraste}
@@ -100,15 +103,15 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('asistenciaTecnica')}</Text>
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
-        <View style={[estilos.itemFila, { borderBottomWidth: 0 }]}>
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+      <Text style={estilosComunes.tituloSeccion}>{t('asistenciaTecnica')}</Text>
+      <View style={estilosComunes.tarjeta}>
+        <View style={[estilosComunes.itemFila, { borderBottomWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="volume-medium-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('lectorPantalla')}</Text>
-            <Text style={[estilos.descripcionItem, { color: colores.textoSecundario }]}>{t('descripcionLector')}</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>{t('lectorPantalla')}</Text>
+            <Text style={estilosComunes.descripcionItem}>{t('descripcionLector')}</Text>
           </View>
           <Switch
             value={lectorPantalla}
@@ -119,17 +122,17 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('regionIdioma')}</Text>
-      <View style={[estilos.tarjetaDropdown, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <Text style={estilosComunes.tituloSeccion}>{t('regionIdioma')}</Text>
+      <View style={estilosComunes.tarjetaDropdown}>
         <TouchableOpacity
-          style={estilos.itemFilaDropdown}
+          style={estilosComunes.itemFilaDropdown}
           onPress={() => setIdiomaMenuAbierto(!idiomaMenuAbierto)}
         >
-          <View style={[estilos.iconoContenedor, { backgroundColor: colores.accentVerdeTenue }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="language-outline" size={20} color={colores.accentVerde} />
           </View>
-          <View style={estilos.infoContenedor}>
-            <Text style={[estilos.tituloItem, { color: colores.textoPrimario }]}>{t('idioma')}</Text>
+          <View style={estilosComunes.infoContenedor}>
+            <Text style={estilosComunes.tituloItem}>{t('idioma')}</Text>
           </View>
           <Text style={[estilos.idiomaSeleccionado, { color: colores.accentVerde }]}>{idioma}</Text>
           <Ionicons
@@ -169,160 +172,5 @@ const AjustesAccesibilidadScreen = ({ navigation }) => {
     </ScrollView>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingTop: 50,
-    paddingBottom: 40,
-  },
-  cabecera: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  botonVolver: {
-    padding: 4,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  tituloSeccion: {
-    fontSize: 14,
-    fontWeight: '700',
-    marginBottom: 12,
-    marginTop: 18,
-    paddingLeft: 4,
-  },
-  contenedorModoVisual: {
-    flexDirection: 'row',
-    borderRadius: 14,
-    padding: 4,
-    borderWidth: 1,
-  },
-  botonModoVisual: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  botonModoVisualActivo: {
-    borderWidth: 1,
-  },
-  textoModoVisual: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  tarjetaSlider: {
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  contenedorSlider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 16,
-  },
-  letraSlider: {
-    fontWeight: '600',
-  },
-  lineaSlider: {
-    flex: 1,
-    height: 6,
-    borderRadius: 3,
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  lineaProgreso: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 4,
-  },
-  puntosFila: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-  },
-  puntoSlider: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    borderWidth: 2,
-  },
-  puntoSliderActivo: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-  },
-  tarjeta: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  tarjetaDropdown: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  itemFila: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-  itemFilaDropdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-  iconoContenedor: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  infoContenedor: {
-    flex: 1,
-  },
-  tituloItem: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  descripcionItem: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  idiomaSeleccionado: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  menuIdiomas: {
-    borderTopWidth: 1,
-    paddingHorizontal: 12,
-  },
-  opcionIdioma: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-  },
-  textoOpcionIdioma: {
-    fontSize: 13,
-  },
-});
 
 export default AjustesAccesibilidadScreen;

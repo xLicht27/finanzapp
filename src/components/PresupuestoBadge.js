@@ -1,54 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORES } from '../constants/theme';
+import { View, Text } from 'react-native';
+import { useTema } from '../context/TemaContext';
+import { presupuestoBadgeEstilos } from '../styles/componentes';
 
-const PresupuestoBadge = ({ presupuesto, moneda, cargando }) => (
-  <View style={estilos.contenedor}>
-    <Text style={estilos.etiqueta}>PRESUPUESTO DIARIO RESTANTE</Text>
-    {cargando ? (
-      <Text style={estilos.cargando}>Calculando...</Text>
-    ) : (
-      <Text style={estilos.monto}>
-        {moneda} {presupuesto}
-      </Text>
-    )}
-    <Text style={estilos.subtexto}>✓ Buen ritmo hoy</Text>
-  </View>
-);
+const PresupuestoBadge = ({ presupuesto, moneda, cargando }) => {
+  const { colores } = useTema();
+  const estilos = presupuestoBadgeEstilos(colores);
 
-const estilos = StyleSheet.create({
-  contenedor: {
-    backgroundColor: COLORES.fondoTarjeta,
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: COLORES.borde,
-  },
-  etiqueta: {
-    color: COLORES.textoSecundario,
-    fontSize: 10,
-    letterSpacing: 1.5,
-    marginBottom: 6,
-    fontWeight: '600',
-  },
-  monto: {
-    color: COLORES.textoPrimario,
-    fontSize: 36,
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  cargando: {
-    color: COLORES.textoSecundario,
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  subtexto: {
-    color: COLORES.accentVerde,
-    fontSize: 12,
-    fontWeight: '500',
-  },
-});
+  return (
+    <View style={[estilos.contenedor, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <Text style={[estilos.etiqueta, { color: colores.textoSecundario }]}>PRESUPUESTO DIARIO RESTANTE</Text>
+      {cargando ? (
+        <Text style={[estilos.cargando, { color: colores.textoSecundario }]}>Calculando...</Text>
+      ) : (
+        <Text style={[estilos.monto, { color: colores.textoPrimario }]}>
+          {moneda} {presupuesto}
+        </Text>
+      )}
+      <Text style={[estilos.subtexto, { color: colores.accentVerde }]}>✓ Buen ritmo hoy</Text>
+    </View>
+  );
+};
 
 export default PresupuestoBadge;

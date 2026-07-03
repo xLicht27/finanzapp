@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
+import { obtenerEstilosGlobales } from '../styles/globales';
+import { privacidadEstilos } from '../styles/AjustesPrivacidadScreenEstilos';
 
 const AjustesPrivacidadScreen = ({ navigation }) => {
   const { colores, t } = useTema();
+  const estilosComunes = obtenerEstilosGlobales(colores);
+  const estilos = privacidadEstilos(colores);
+
   const [bancoPush, setBancoPush] = useState(true);
   const [gmail, setGmail] = useState(false);
 
@@ -36,31 +39,31 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={[estilos.fondoPrincipal, { backgroundColor: colores.fondoPrimario }]}
-      contentContainerStyle={estilos.scroll}
+      style={estilosComunes.fondoPrincipal}
+      contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <View style={estilos.cabecera}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botonVolver}>
+      <View style={estilosComunes.cabecera}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={estilosComunes.botonVolver}>
           <Ionicons name="chevron-back" size={22} color={colores.textoPrimario} />
         </TouchableOpacity>
-        <Text style={[estilos.titulo, { color: colores.textoPrimario }]}>{t('privacidadControl')}</Text>
+        <Text style={estilosComunes.titulo}>{t('privacidadControl')}</Text>
         <View style={{ width: 30 }} />
       </View>
 
-      <Text style={[estilos.tituloSeccion, { color: colores.textoPrimario }]}>{t('privacidadControl')}</Text>
+      <Text style={estilosComunes.tituloSeccion}>{t('privacidadControl')}</Text>
       <Text style={[estilos.descripcionSeccion, { color: colores.textoSecundario }]}>
         Gestiona cómo FinanZaap accede y procesa tu información financiera.
       </Text>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <Text style={[estilos.etiquetaTarjeta, { color: colores.textoPrimario }]}>Fuentes de Datos</Text>
         <Text style={[estilos.descripcionTarjeta, { color: colores.textoSecundario }]}>
           Controla los canales desde donde la IA extrae información transaccional automáticamente.
         </Text>
 
         <View style={[estilos.itemFuente, { borderBottomColor: colores.borde }]}>
-          <View style={[estilos.iconoFuente, { backgroundColor: colores.accentVerdeTenue }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="phone-portrait-outline" size={18} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoFuente}>
@@ -76,7 +79,7 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
         </View>
 
         <View style={[estilos.itemFuente, { borderBottomWidth: 0 }]}>
-          <View style={[estilos.iconoFuente, { backgroundColor: colores.accentVerdeTenue }]}>
+          <View style={estilosComunes.iconoContenedor}>
             <Ionicons name="mail-outline" size={18} color={colores.accentVerde} />
           </View>
           <View style={estilos.infoFuente}>
@@ -95,7 +98,7 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
       <View style={[estilos.tarjetaPeligro, { borderColor: '#F0A500' }]}>
         <View style={estilos.encabezadoPeligro}>
           <Ionicons name="warning-outline" size={16} color="#F0A500" />
-          <Text style={estilos.tituloPeligro}>Zona de Peligro</Text>
+          <Text style={[estilos.tituloPeligro, { color: '#F0A500' }]}>Zona de Peligro</Text>
         </View>
         <Text style={[estilos.descripcionPeligro, { color: colores.textoSecundario }]}>
           Esta acción eliminará todos los accesos de la IA a tus fuentes de datos. La aplicación dejará de registrar transacciones automáticamente.
@@ -105,7 +108,7 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={[estilos.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <View style={[estilosComunes.tarjeta, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
         <View style={estilos.encabezadoHistorial}>
           <Text style={[estilos.etiquetaTarjeta, { color: colores.textoPrimario }]}>Historial de IA</Text>
           <View style={[estilos.badgeLog, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
@@ -130,161 +133,5 @@ const AjustesPrivacidadScreen = ({ navigation }) => {
     </ScrollView>
   );
 };
-
-const estilos = StyleSheet.create({
-  fondoPrincipal: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 20,
-    paddingTop: 50,
-    paddingBottom: 40,
-  },
-  cabecera: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  botonVolver: {
-    padding: 4,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  tituloSeccion: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-  descripcionSeccion: {
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: 20,
-  },
-  tarjeta: {
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  etiquetaTarjeta: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  descripcionTarjeta: {
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: 14,
-  },
-  itemFuente: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  iconoFuente: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  infoFuente: {
-    flex: 1,
-  },
-  nombreFuente: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  descripcionFuente: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  tarjetaPeligro: {
-    backgroundColor: '#1A1006',
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  encabezadoPeligro: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  tituloPeligro: {
-    color: '#F0A500',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  descripcionPeligro: {
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: 14,
-  },
-  botonRevocar: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  textoRevocar: {
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  encabezadoHistorial: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  badgeLog: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  textoLog: {
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  itemHistorial: {
-    flexDirection: 'row',
-    marginTop: 12,
-  },
-  puntito: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 4,
-    marginRight: 10,
-  },
-  infoHistorial: {
-    flex: 1,
-  },
-  encabezadoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 2,
-  },
-  tipoHistorial: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  tiempoHistorial: {
-    fontSize: 10,
-  },
-  descripcionHistorial: {
-    fontSize: 12,
-    lineHeight: 17,
-  },
-});
 
 export default AjustesPrivacidadScreen;
