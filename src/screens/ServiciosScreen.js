@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvo
 import { Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { useTema } from '../context/TemaContext';
 import { obtenerEstilosGlobales } from '../styles/globales';
 import { serviciosEstilos } from '../styles/ServiciosScreenEstilos';
@@ -149,6 +150,21 @@ const ServiciosScreen = () => {
     );
   };
 
+  const ejecutarDiagnosticoIA = async () => {
+    setDiagnosticoEjecutado(true);
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status === 'granted') {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Diagnóstico Completado',
+          body: 'El análisis de tu cartera financiera por IA ha finalizado con éxito.',
+          sound: true,
+        },
+        trigger: null,
+      });
+    }
+  };
+
   const renderAccionesSwipe = (meta, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [-160, -80],
@@ -239,7 +255,7 @@ const ServiciosScreen = () => {
               { backgroundColor: colores.accentVerde },
               diagnosticoEjecutado && { backgroundColor: colores.altoContraste ? colores.borde : (colores.modoVisual === 'Claro' ? '#00795F' : '#0D5E3E') }
             ]}
-            onPress={() => setDiagnosticoEjecutado(true)}
+            onPress={ejecutarDiagnosticoIA}
           >
             <Text style={[estilos.textoBotonDiagnostico, { color: colores.fondoPrimario }]}>
               {diagnosticoEjecutado ? t('diagnosticoCompletado') : t('ejecutarDiagnostico')}

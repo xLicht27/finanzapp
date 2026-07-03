@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { useTema } from '../context/TemaContext';
 import { obtenerEstilosGlobales } from '../styles/globales';
 import { notificacionesEstilos } from '../styles/AjustesNotificacionesScreenEstilos';
@@ -14,6 +15,23 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
   const [promociones, setPromociones] = useState(false);
   const [gastosExcesivos, setGastosExcesivos] = useState(true);
   const [nuevasPoliticas, setNuevasPoliticas] = useState(true);
+
+  const dispararAlerta = async (valor, setValor, etiqueta) => {
+    setValor(valor);
+    if (valor) {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status === 'granted') {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Preferencia Guardada',
+            body: `Has activado las notificaciones de: ${etiqueta}`,
+            sound: true,
+          },
+          trigger: null,
+        });
+      }
+    }
+  };
 
   return (
     <ScrollView
@@ -45,7 +63,7 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           </View>
           <Switch
             value={notificaciones}
-            onValueChange={setNotificaciones}
+            onValueChange={(val) => dispararAlerta(val, setNotificaciones, 'Notificaciones generales')}
             trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
           />
@@ -61,7 +79,7 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           </View>
           <Switch
             value={promociones}
-            onValueChange={setPromociones}
+            onValueChange={(val) => dispararAlerta(val, setPromociones, 'Promociones')}
             trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
             disabled={!notificaciones}
@@ -78,7 +96,7 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           </View>
           <Switch
             value={gastosExcesivos}
-            onValueChange={setGastosExcesivos}
+            onValueChange={(val) => dispararAlerta(val, setGastosExcesivos, 'Gastos excesivos')}
             trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
             disabled={!notificaciones}
@@ -95,7 +113,7 @@ const AjustesNotificacionesScreen = ({ navigation }) => {
           </View>
           <Switch
             value={nuevasPoliticas}
-            onValueChange={setNuevasPoliticas}
+            onValueChange={(val) => dispararAlerta(val, setNuevasPoliticas, 'Nuevas políticas')}
             trackColor={{ false: colores.borde, true: colores.accentVerde }}
             thumbColor="#FFFFFF"
             disabled={!notificaciones}
