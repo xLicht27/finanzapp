@@ -13,13 +13,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.finanzaap.app",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Esta aplicación requiere acceso a FaceID para asegurar el acceso a tus datos financieros."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.finanzaap.app",
       "edgeToEdgeEnabled": true
     },
     "web": {

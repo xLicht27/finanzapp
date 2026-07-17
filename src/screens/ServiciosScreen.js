@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Animated } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Animated, Image } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { useTema } from '../context/TemaContext';
 import { obtenerEstilosGlobales } from '../styles/globales';
 import { serviciosEstilos } from '../styles/ServiciosScreenEstilos';
 import MetaAhorroCard from '../components/MetaAhorroCard';
+import useTipoCambio from '../hooks/useTipoCambio';
 
 const CLAVE_METAS = 'finanzaap_metas';
 
@@ -33,6 +34,10 @@ const ServiciosScreen = () => {
   const [montoObjetivo, setMontoObjetivo] = useState('');
   const [fechaLimite, setFechaLimite] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const [fotoCapturada, setFotoCapturada] = useState(null);
+  const { tasa } = useTipoCambio('USD');
+  const [usdValue, setUsdValue] = useState('');
+  const [penValue, setPenValue] = useState('');
 
   const swipeableRefs = useRef({});
   const refCamara = useRef(null);
@@ -178,28 +183,78 @@ const ServiciosScreen = () => {
     }
   };
 
+  /**
+   * Captura la fotografía del recibo desde la cámara de manera asíncrona.
+   * Cierra la vista de cámara y guarda la ruta temporal de la imagen.
+   */
   const capturarFoto = async () => {
     if (refCamara.current) {
       try {
-        await refCamara.current.takePictureAsync();
+        const foto = await refCamara.current.takePictureAsync();
         setCamaraVisible(false);
-        Alert.alert('Escaneo', 'Comprobante escaneado con éxito');
-        
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status === 'granted') {
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: '¡Recibo Procesado!',
-              body: 'Se ha registrado un gasto de S/. 25.50 en la categoría Alimentos.',
-              sound: true,
-            },
-            trigger: null,
-          });
-        }
+        setFotoCapturada(foto.uri);
       } catch (err) {
         Alert.alert('Error', 'No se pudo capturar la fotografía del comprobante.');
       }
     }
+  };
+
+  /**
+   * Confirma la información del recibo previsualizado,
+   * y dispara una notificación nativa local confirmando la operación.
+   */
+  const confirmarRegistroRecibo = async () => {
+    setFotoCapturada(null);
+    Alert.alert('Escaneo Exitoso', 'Comprobante registrado correctamente.');
+
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status === 'granted') {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '¡Recibo Procesado!',
+          body: 'Se ha registrado un gasto de S/. 25.50 en la categoría Alimentos.',
+          sound: true,
+        },
+        trigger: null,
+      });
+    }
+  };
+
+  /**
+   * Descarta la previsualización del recibo escaneado.
+   */
+  const descartarRecibo = () => {
+    setFotoCapturada(null);
+  };
+
+  /**
+   * Procesa el cambio en la entrada de dólares y calcula el monto equivalente en soles.
+   * 
+   * @param {string} valor - Cantidad ingresada en la entrada de dólares.
+   */
+  const manejarCambioUSD = (valor) => {
+    setUsdValue(valor);
+    if (!valor || isNaN(Number(valor))) {
+      setPenValue('');
+      return;
+    }
+    const tasaCambio = tasa || 3.75;
+    setPenValue((Number(valor) * tasaCambio).toFixed(2));
+  };
+
+  /**
+   * Procesa el cambio en la entrada de soles y calcula el monto equivalente en dólares.
+   * 
+   * @param {string} valor - Cantidad ingresada en la entrada de soles.
+   */
+  const manejarCambioPEN = (valor) => {
+    setPenValue(valor);
+    if (!valor || isNaN(Number(valor))) {
+      setUsdValue('');
+      return;
+    }
+    const tasaCambio = tasa || 3.75;
+    setUsdValue((Number(valor) / tasaCambio).toFixed(2));
   };
 
   const renderAccionesSwipe = (meta, dragX) => {
@@ -325,6 +380,30 @@ const ServiciosScreen = () => {
               ESCANEAR COMPROBANTE
             </Text>
           </TouchableOpacity>
+
+          {fotoCapturada && (
+            <View style={[estilos.contenedorVistaPrevia, { borderColor: colores.borde }]}>
+              <Text style={[estilos.tituloPreview, { color: colores.textoPrimario }]}>Vista Previa del Recibo</Text>
+              <Image source={{ uri: fotoCapturada }} style={estilos.imagenRecibo} resizeMode="cover" />
+              <Text style={[estilos.textoDetallePreview, { color: colores.textoSecundario }]}>
+                Monto detectado: S/. 25.50{'\n'}Categoría: Alimentos
+              </Text>
+              <View style={estilos.filaBotonesPreview}>
+                <TouchableOpacity
+                  style={[estilos.botonDescartarPreview, { borderColor: colores.peligro }]}
+                  onPress={descartarRecibo}
+                >
+                  <Text style={{ color: colores.peligro, fontWeight: '700', fontSize: 13 }}>Descartar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[estilos.botonConfirmarPreview, { backgroundColor: colores.accentVerde }]}
+                  onPress={confirmarRegistroRecibo}
+                >
+                  <Text style={{ color: colores.fondoPrimario, fontWeight: '700', fontSize: 13 }}>Confirmar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </View>
 
         <View style={[estilos.tarjetaAI, { backgroundColor: colores.accentVerdeTenue, borderColor: colores.accentVerde }]}>
@@ -349,6 +428,51 @@ const ServiciosScreen = () => {
               {diagnosticoEjecutado ? t('diagnosticoCompletado') : t('ejecutarDiagnostico')}
             </Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={[estilos.tarjetaAI, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde, marginTop: 16 }]}>
+          <View style={estilos.encabezadoAI}>
+            <Ionicons name="calculator-outline" size={16} color={colores.accentVerde} />
+            <Text style={[estilos.tituloAI, { color: colores.accentVerde }]}>CONVERSOR DE DIVISAS</Text>
+          </View>
+          <Text style={[estilos.tituloAnalisis, { color: colores.textoPrimario }]}>Calculadora Cambiaria</Text>
+          <Text style={[estilos.descripcionAI, { color: colores.textoSecundario }]}>
+            Convierte montos entre Dólares y Soles al instante utilizando el tipo de cambio oficial de la aplicación.
+          </Text>
+
+          <View style={{ gap: 12, marginBottom: 10 }}>
+            <View>
+              <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario, marginTop: 0 }]}>Dólares (USD)</Text>
+              <TextInput
+                style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
+                placeholder="0.00"
+                placeholderTextColor={colores.textoSecundario}
+                keyboardType="numeric"
+                value={usdValue}
+                onChangeText={manejarCambioUSD}
+              />
+            </View>
+
+            <View style={{ alignItems: 'center', marginVertical: -4 }}>
+              <Ionicons name="swap-vertical" size={18} color={colores.accentVerde} />
+            </View>
+
+            <View>
+              <Text style={[estilos.etiquetaCampo, { color: colores.textoSecundario, marginTop: 0 }]}>Soles (PEN)</Text>
+              <TextInput
+                style={[estilos.entrada, { backgroundColor: colores.fondoPrimario, borderColor: colores.borde, color: colores.textoPrimario }]}
+                placeholder="0.00"
+                placeholderTextColor={colores.textoSecundario}
+                keyboardType="numeric"
+                value={penValue}
+                onChangeText={manejarCambioPEN}
+              />
+            </View>
+          </View>
+
+          <Text style={{ fontSize: 11, color: colores.textoSecundario, textAlign: 'center', marginTop: 10 }}>
+            Tasa de cambio aplicada: 1 USD = S/. ${(tasa || 3.75).toFixed(3)}
+          </Text>
         </View>
       </ScrollView>
 

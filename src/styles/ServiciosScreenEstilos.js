@@ -169,4 +169,48 @@ export const serviciosEstilos = (colores) => StyleSheet.create({
   textoBotonCancelar: {
     fontSize: 14,
   },
+  contenedorVistaPrevia: {
+    padding: 20,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  imagenRecibo: {
+    width: '100%',
+    height: 250,
+    borderRadius: 10,
+    marginBottom: 16,
+    backgroundColor: '#000',
+  },
+  tituloPreview: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  textoDetallePreview: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  filaBotonesPreview: {
+    flexDirection: 'row',
+    gap: 16,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  botonConfirmarPreview: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  botonDescartarPreview: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+  },
 });

@@ -1,130 +1,150 @@
 # FinanZaap Mobile
 
-FinanZaap es una aplicación móvil multiplataforma diseñada para el control financiero personal, la categorización inteligente de gastos y la planificación de metas de ahorro. Desarrollada sobre React Native y Expo, la aplicación ofrece una experiencia fluida con soporte global de temas reactivos, alta accesibilidad y una arquitectura estructurada y escalable.
+FinanZaap es una aplicación móvil multiplataforma diseñada para el control financiero personal, la categorización inteligente de gastos y la planificación de metas de ahorro. Desarrollada sobre React Native y Expo, la aplicación ofrece una experiencia fluida con soporte global de temas reactivos, alta accesibilidad, capacidades nativas robustas y una arquitectura estructurada, segura y escalable.
 
-## Estructura de Archivos del Proyecto
+---
 
-A continuación se detalla el árbol completo de archivos del proyecto con anotaciones y notas explicativas en español para cada uno de los directorios y componentes principales:
+## Estructura del Proyecto
+
+El código fuente de la aplicación se organiza dentro del directorio raíz src/, distribuyendo las responsabilidades en la siguiente jerarquía de carpetas:
 
 ```
 finanzapp-mobile/
 ├── assets/                                 # Recursos visuales estáticos e imágenes del proyecto
-│   └── logo.png                            # Logotipo principal de la marca FinanZaap
+│   └── logo.png                            # Logotipo principal de FinanZaap
 ├── src/                                    # Directorio contenedor del código fuente
-│   ├── components/                         # Módulo de componentes visuales interactivos y reutilizables
-│   │   ├── CategoriaBar.js                 # Barra visual para desglosar el gasto por porcentaje en categorías
-│   │   ├── CustomButton.js                 # Botón táctil estilizado con animaciones y spinner de carga
-│   │   ├── MetaAhorroCard.js               # Tarjeta con barras de progreso para el seguimiento de metas de ahorro
-│   │   ├── PresupuestoBadge.js             # Recuadro con el presupuesto restante y el estado de la meta diaria
-│   │   └── TransaccionItem.js              # Renglón con ícono dinámico para detallar gastos o ingresos individuales
-│   ├── context/                            # Proveedores de estado y contextos globales de la aplicación
-│   │   ├── AuthContext.js                  # Maneja la sesión del usuario (inicio de sesión, datos y cierre)
-│   │   └── TemaContext.js                  # Controla el tema visual (Modos y Alto Contraste) e idiomas (Traducciones)
+│   ├── components/                         # Componentes visuales interactivos y reutilizables
+│   │   ├── CategoriaBar.js                 # Barra de porcentaje de gastos por categorías
+│   │   ├── CustomButton.js                 # Botón táctil estilizado con spinner de carga
+│   │   ├── MetaAhorroCard.js               # Tarjeta con progreso para metas de ahorro
+│   │   ├── PresupuestoBadge.js             # Recuadro con presupuesto restante y estado diario
+│   │   └── TransaccionItem.js              # Renglón con ícono dinámico para transacciones
+│   ├── context/                            # Proveedores de estado y contextos globales
+│   │   ├── AuthContext.js                  # Maneja la sesión y el estado de la biometría
+│   │   └── TemaContext.js                  # Administra temas (Claro, Oscuro, Alto Contraste) e idiomas
 │   ├── hooks/                              # Ganchos o hooks personalizados de lógica reactiva
-│   │   └── useTipoCambio.js                # Consume API de tipo de cambio de divisas con estados de carga
+│   │   └── useTipoCambio.js                # Custom hook para el consumo de tipo de cambio
 │   ├── navigation/                         # Configuración y enrutadores de los flujos de navegación
-│   │   ├── AppNavigator.js                 # Flujo principal compuesto de pestañas inferiores y pila de ajustes
-│   │   ├── AuthNavigator.js                # Flujo de autenticación (pantallas de Login y Registro)
-│   │   └── RootNavigator.js                # Decisor raíz que alterna flujos según el estado de la sesión
+│   │   ├── AppNavigator.js                 # Flujo principal de pestañas inferiores y ajustes
+│   │   ├── AuthNavigator.js                # Flujo de autenticación (Login y Registro)
+│   │   └── RootNavigator.js                # Enrutador raíz con control de bloqueo biométrico
 │   ├── screens/                            # Pantallas o interfaces completas de la aplicación
-│   │   ├── AjustesAccesibilidadScreen.js   # Permite configurar el tema, alto contraste, tamaño de texto e idioma
-│   │   ├── AjustesEliminarCuentaScreen.js   # Flujo guiado de 5 pasos para eliminar la cuenta con validación local
-│   │   ├── AjustesNotificacionesScreen.js   # Configura las alertas sobre gastos excesivos, promociones y avisos
-│   │   ├── AjustesPrivacidadScreen.js       # Controla el acceso de la IA a fuentes de datos y muestra logs
-│   │   ├── AjustesScreen.js                 # Menú general con accesos al perfil y las configuraciones de la app
-│   │   ├── HomeScreen.js                    # Tablero de inicio que muestra el presupuesto diario y las transacciones
-│   │   ├── LoginScreen.js                   # Formulario de acceso a la cuenta con validación de correo y contraseña
-│   │   ├── ProfileScreen.js                 # Detalla el perfil del usuario activo y opción de cierre de sesión
-│   │   ├── RegisterScreen.js                # Formulario interactivo por pasos para dar de alta cuentas nuevas
-│   │   ├── ReportesScreen.js                # Tablero estadístico con resúmenes de ahorro y desgloses gráficos
-│   │   └── ServiciosScreen.js               # Módulo de metas de ahorro deslizables y diagnóstico de cartera por IA
-│   └── styles/                             # Hojas de estilo modulares desacopladas de la lógica funcional
-│       ├── AjustesAccesibilidadScreenEstilos.js  # Reglas de diseño para la vista de accesibilidad
-│       ├── AjustesEliminarCuentaScreenEstilos.js  # Diseño visual del flujo guiado de eliminación de cuenta
-│       ├── AjustesNotificacionesScreenEstilos.js  # Estilos para los textos descriptivos de alertas
-│       ├── AjustesPrivacidadScreenEstilos.js      # Diseño del historial IA, logs y zona de peligro
-│       ├── AjustesScreenEstilos.js                # Reglas de maquetación del panel principal de ajustes y avatar
-│       ├── HomeScreenEstilos.js                   # Estilos del saludo e indicador de tipo de cambio
-│       ├── LoginScreenEstilos.js                  # Diseño del formulario de acceso, logo y recuadros de error
-│       ├── ProfileScreenEstilos.js                # Diseño del perfil y los botones de sesión
-│       ├── RegisterScreenEstilos.js               # Diseño del formulario de registro y su indicador de pasos
-│       ├── ReportesScreenEstilos.js               # Estilos para el selector de meses y gráficos de barras
-│       ├── ServiciosScreenEstilos.js              # Diseño de los botones swipeable de las tarjetas y modales
-│       ├── componentes.js                         # Hojas de estilo individuales para componentes de la carpeta components
-│       └── globales.js                            # Paleta de colores para los 4 temas y contenedores base comunes
-├── App.js                                  # Punto de entrada raíz de la estructura de componentes React Native
-├── app.json                                # Archivo de manifiesto de Expo para compilar y empaquetar la app
-├── index.js                                # Registra y lanza la aplicación en el hilo principal
-└── package.json                            # Declaración de dependencias del proyecto y scripts npm de inicio
+│   │   ├── AjustesAccesibilidadScreen.js   # Preferencias de tema, alto contraste y tamaño de texto
+│   │   ├── AjustesEliminarCuentaScreen.js  # Flujo guiado de 5 pasos para eliminar la cuenta
+│   │   ├── AjustesNotificacionesScreen.js  # Configuración de alertas y avisos del sistema
+│   │   ├── AjustesPrivacidadScreen.js      # Control de IA e interruptor de biometría nativa
+│   │   ├── AjustesScreen.js                 # Menú general con accesos al perfil y configuraciones
+│   │   ├── HomeScreen.js                   # Tablero de inicio con presupuesto y transacciones
+│   │   ├── LoginScreen.js                  # Formulario de acceso con biometría
+│   │   ├── ProfileScreen.js                # Detalla el perfil del usuario activo y cierre de sesión
+│   │   ├── RegisterScreen.js               # Formulario de registro en 3 etapas
+│   │   ├── ReportesScreen.js               # Gráficos y resúmenes estadísticos de gastos
+│   │   └── ServiciosScreen.js               # Metas deslizables (Swipe), IA y cámara nativa
+│   ├── services/                           # Módulo desacoplado para consumo de servicios
+│   │   ├── pdfServicio.js                  # Servicio de compilación y exportación de PDFs
+│   │   └── tipoCambioServicio.js           # Servicio de consumo de API REST con caché offline
+│   └── styles/                             # Hojas de estilo modulares independientes de la lógica
+│       ├── AjustesAccesibilidadScreenEstilos.js
+│       ├── AjustesEliminarCuentaScreenEstilos.js
+│       ├── AjustesNotificacionesScreenEstilos.js
+│       ├── AjustesPrivacidadScreenEstilos.js
+│       ├── AjustesScreenEstilos.js
+│       ├── HomeScreenEstilos.js
+│       ├── LoginScreenEstilos.js
+│       ├── ProfileScreenEstilos.js
+│       ├── RegisterScreenEstilos.js
+│       ├── ReportesScreenEstilos.js
+│       ├── ServiciosScreenEstilos.js
+│       ├── componentes.js                  # Reglas de estilo para widgets de src/components
+│       └── globales.js                     # Paleta de colores para los 4 temas y bases comunes
+├── App.js                                  # Punto de entrada raíz de React Native
+├── app.json                                # Archivo de manifiesto de Expo para compilar
+├── eas.json                                # Archivo que define perfiles para EAS Build
+├── index.js                                # Registro en el hilo principal
+└── package.json                            # Dependencias y scripts de ejecución
 ```
 
-## Análisis de la Arquitectura del Proyecto
+---
 
-El código fuente de la aplicación se organiza dentro del directorio raíz `src/`, el cual distribuye las responsabilidades en la siguiente jerarquía de carpetas:
+## Análisis de la Arquitectura
 
-*   **`components/`**: Contiene componentes visuales y widgets reutilizables de la interfaz de usuario. Ninguno de estos componentes almacena lógica de navegación pesada, actuando principalmente como componentes de presentación.
-*   **`context/`**: Proveedores de estado global para la aplicación. Centraliza los contextos esenciales como `AuthContext.js` para controlar la sesión del usuario y `TemaContext.js` para administrar las preferencias visuales e idiomáticas de forma global.
-*   **`hooks/`**: Custom hooks que encapsulan la lógica de negocio y llamadas a servicios externos, como la sincronización con APIs externas de tipos de cambio de divisas.
-*   **`navigation/`**: Define la estructura de navegación de la aplicación mediante navegadores de pila nativa y navegadores de pestañas inferiores, conectando de forma fluida el flujo de autenticación con el flujo principal de pantallas.
-*   **`screens/`**: Vistas o pantallas completas de la aplicación (como Inicio, Reportes, Servicios y los submenús de Ajustes). Se encargan de enlazar los componentes y consumir los contextos correspondientes.
-*   **`styles/`**: Directorio dedicado a la gestión visual que aísla por completo el diseño de la lógica funcional, emulando una organización limpia tipo web de hojas de estilo independientes.
+FinanZaap Mobile se rige bajo una arquitectura limpia y desacoplada de responsabilidades:
+*   Presentación Aislada (screens/ y components/): Las pantallas estructuran el diseño, consumiendo componentes visuales reutilizables. No manejan estilos inline de gran volumen.
+*   Separación de Estilos (styles/): Toda la visualización estética se extrae a hojas de estilo modulares que reciben la paleta de colores reactiva actual según el modo seleccionado (Claro, Oscuro, Alto Contraste).
+*   Lógica de Negocio Centralizada (context/ y hooks/): Se administra el estado global como las credenciales del usuario, el idioma y el tema de manera centralizada.
+*   Servicios Desacoplados (services/): Módulo independiente que encapsula llamadas externas de red a APIs REST e interactúa con el hardware, aislando la lógica técnica de fetch y renderizado nativo de los hooks reactivos y componentes de pantalla.
 
-## Documentación del Esquema de Estilos Modulares
+---
 
-El sistema visual de FinanZaap ha sido completamente refactorizado para eliminar dependencias de archivos estáticos centralizados como `theme.js`. El nuevo diseño se organiza a través de los siguientes archivos en `src/styles/`:
+## Integración de API REST (Offline-First)
 
-1.  **`globales.js`**: Define las paletas cromáticas reactivas para los modos Claro, Oscuro y Alto Contraste, además de las hojas de estilo comunes compartidas por las pantallas (SafeAreas, contenedores base, cabeceras y márgenes estándar).
-2.  **`componentes.js`**: Reúne las hojas de estilo exclusivas de los componentes compartidos ubicados en `src/components/`, incluyendo comentarios de sección breves para identificar cada bloque.
-3.  **Hojas de Estilo por Pantalla**: Cada pantalla en `src/screens/` posee su propia hoja de estilos dedicada y homónima dentro de `src/styles/` (por ejemplo, `HomeScreenEstilos.js`, `AjustesScreenEstilos.js`, etc.). Esto garantiza la modularidad y evita hojas de estilo sobredimensionadas, permitiendo que cada vista consuma exclusivamente sus reglas de diseño mediante funciones reactivas que reciben los colores actuales del tema activo.
+Para asegurar el cumplimiento de la rúbrica y garantizar que la aplicación funcione de manera estable en la exposición (donde puede haber baja señal), el consumo de la API de divisas (exchangerate-api.com) cuenta con una arquitectura de caché offline-first:
 
-Todos los archivos de diseño omiten el uso de propiedades exclusivas de plataformas específicas como `elevation` de Android, implementando en su lugar sombras y bordes nativos multiplataforma.
+1.  Llamada Segura: La app intenta consumir la API REST del tipo de cambio actual.
+2.  Caché en Almacenamiento Local: Si la llamada es exitosa, guarda de inmediato la tasa PEN en AsyncStorage.
+3.  Fallback sin Bloqueos: Si ocurre un fallo de red o se expone sin internet, el servicio captura la excepción de forma asíncrona y extrae de inmediato la última tasa guardada en la caché local.
+4.  Respaldo por Defecto: Si no hay datos previos en caché, aplica un valor de respaldo (3.75) garantizando la estabilidad absoluta de la interfaz.
 
-## Funcionalidades Clave
+---
 
-### Accesibilidad y Personalización Visual Reactiva
-Mediante el proveedor global `TemaContext.js`, la interfaz se adapta en tiempo real a las preferencias del usuario:
-*   **Modo Claro**: Paleta de colores optimizada para la lectura en entornos de alta luminosidad.
-*   **Modo Oscuro**: Interfaz diseñada para reducir la fatiga visual con colores de fondo de baja intensidad.
-*   **Alto Contraste**: Variante cromática optimizada con relaciones de contraste elevadas para usuarios con dificultades visuales.
+## Funcionalidades Nativas Implementadas (Expo APIs)
 
-### Flujo de Eliminación de Cuenta de Seguridad
-Ubicado en `AjustesEliminarCuentaScreen.js`, el flujo consta de una secuencia de 5 pasos diseñada para evitar pérdidas accidentales de datos:
-1.  **Confirmación Inicial**: Advertencia sobre el carácter irreversible de la acción.
-2.  **Código SMS**: Envío simulado de un código al dispositivo del usuario. Cuenta con un control local de errores que fuerza un fallo en el primer intento del código ingresado, forzando al usuario a reintentar y tener éxito únicamente en el segundo intento (código predeterminado `1234`).
-3.  **Confirmación de Frase**: Validación estricta que requiere que el usuario marque una casilla de verificación de términos y escriba exactamente la palabra "ELIMINAR" en mayúsculas para desbloquear el botón de borrado definitivo.
-4.  **Confirmación de Éxito**: Vista final de notificación de cierre de cuenta, enlazada a la desconexión del usuario.
+La aplicación utiliza las siguientes capacidades de hardware nativo de manera fluida y con control de permisos:
 
-### Notificaciones Locales Nativas (expo-notifications)
-Se ha integrado el soporte nativo de notificaciones locales para interactuar activamente con el usuario y cumplir con los criterios de evaluación de capacidades nativas:
-*   **Disparador de Preferencias**: Al activar cualquier interruptor en la pantalla de Configuración de Alertas, se lanza de inmediato una notificación nativa local de confirmación.
-*   **Disparador de Optimización por IA**: Al finalizar la simulación del diagnóstico de cartera por Inteligencia Artificial en el panel de Servicios, se despacha una notificación nativa local flotante: *"¡Optimización Completa! Tu reporte de IA ya está listo."*
-*   **Disparador de Escaneo**: Al completar el escaneo de un comprobante físico por cámara, se lanza la notificación nativa local: *"¡Recibo Procesado! Se ha registrado un gasto de S/. 25.50 en la categoría Alimentos."*
+### 1. Autenticación Biométrica (expo-local-authentication)
+*   Manejo de Permisos: Verifica si el dispositivo cuenta con sensores biométricos y si existen registros activos en el sistema operativo.
+*   Seguridad Activa: Permite habilitar/deshabilitar el acceso biométrico desde Ajustes de Privacidad. Al estar activo, la aplicación bloquea el acceso en RootNavigator y solicita la huella o rostro del usuario al iniciar la app.
 
-### Escáner de Comprobantes con Cámara Nativa (expo-camera)
-Se incorporó el acceso nativo al hardware de la cámara del dispositivo móvil para la sección "Escáner de Recibos Físicos":
-*   **Gestión de Permisos**: Solicita accesos nativos del sistema en español. En caso de ser denegados, muestra un cuadro de diálogo descriptivo solicitando la habilitación desde los ajustes del sistema.
-*   **Captura en Tiempo Real**: Abre una interfaz de cámara nativa en pantalla completa (`CameraView`) para visualizar lo que apunta la lente.
-*   **Captura Asíncrona**: Al presionar el botón "Tomar Foto", procesa y captura la imagen asíncronamente, cierra la cámara y muestra la confirmación en pantalla *"Comprobante escaneado con éxito"*, disparando a su vez el registro del gasto automático de forma simulada.
+### 2. Escáner con Cámara Nativa (expo-camera)
+*   Solicitud de Acceso: Solicita accesos de cámara en español. Si el usuario deniega, explica de forma amigable cómo habilitarlos.
+*   Captura y Previsualización: Abre CameraView para capturar la imagen. Al tomar la foto del comprobante, muestra una miniatura (preview) elegante del recibo en pantalla con opciones de Confirmar o Descartar.
 
+### 3. Notificaciones Locales (expo-notifications)
+*   Acciones Desencadenantes: Despacha alertas del sistema de manera asíncrona ante acciones críticas:
+    *   Al guardar los cambios de alertas en Configuración de Notificaciones.
+    *   Al completar el diagnóstico de cartera por Inteligencia Artificial.
+    *   Al confirmar la previsualización del recibo escaneado por cámara.
 
+### 4. Generación e Impresión de Documentos (expo-print) y Compartido Nativo (expo-sharing)
+*   Exportación PDF: Genera un documento PDF estructurado en tiempo real conteniendo el reporte de transacciones y de metas de ahorro activas del usuario, aplicando los colores y estilos del tema seleccionado.
+*   Compartido del Sistema: Abre el menú nativo del dispositivo (iOS y Android) para enviar el reporte PDF a través de WhatsApp, correo, o guardarlo directamente en el almacenamiento interno.
+
+---
+
+## Módulo de Conversor de Divisas
+
+Se ha integrado en la pantalla de Servicios un módulo conversor de divisas interactivo que consume en tiempo real la tasa del tipo de cambio oficial de la aplicación:
+*   Doble Vinculación Reactiva: Escribir un monto en dólares (USD) calcula instantáneamente su conversión a soles (PEN), y escribir en soles calcula su valor equivalente en dólares.
+*   Diseño Responsivo: Se integra estéticamente bajo la misma guía de diseño de tarjetas del sistema financiero oscuro de la aplicación.
+*   Funcionamiento sin Conexión: Al consumir la tasa gestionada por useTipoCambio, el conversor mantiene la operatividad plena offline utilizando la caché local en AsyncStorage.
+
+---
+
+## Configuración del Entorno de Publicación (EAS Build)
+
+La aplicación está completamente preparada para compilarse nativamente para Android (APK/AAB) e iOS (IPA) mediante los estándares oficiales de la industria:
+*   app.json: Contiene las especificaciones nativas completas, incluyendo el identificador de paquete para Android (android.package: "com.finanzaap.app") y el bundle identifier para iOS (ios.bundleIdentifier: "com.finanzaap.app"), así como la llave NSFaceIDUsageDescription para autorizar FaceID.
+*   eas.json: Archivo que define las reglas y perfiles de compilación para la consola de EAS (Expo Application Services) para generar compilaciones de desarrollo (development), pruebas internas (preview) y producción final (production).
+
+---
 
 ## Guía de Instalación y Ejecución
 
 Sigue estos pasos para desplegar el entorno de desarrollo local en cualquier simulador o dispositivo físico:
 
-1.  **Instalación de Dependencias**:
+1.  Instalación de Dependencias:
     Abre la terminal en la carpeta raíz del proyecto y ejecuta:
     ```bash
     npm install
     ```
 
-2.  **Despliegue del Servidor de Desarrollo**:
+2.  Despliegue del Servidor de Desarrollo:
     Inicia Metro Bundler de Expo mediante el comando estándar:
     ```bash
     npx expo start
     ```
 
-3.  **Visualización en Dispositivos**:
-    *   **Dispositivo Físico**: Escanea el código QR que se muestra en la terminal usando la aplicación Expo Go (disponible en Google Play Store y Apple App Store).
-    *   **Emulador de Android**: Presiona la tecla `a` en la terminal para desplegar la app en un emulador activo de Android.
-    *   **Simulador de iOS**: Presiona la tecla `i` en la terminal para desplegar la app en un simulador activo de iOS.
+3.  Visualización en Dispositivos:
+    *   Dispositivo Físico: Escanea el código QR que se muestra en la terminal usando la aplicación Expo Go (disponible en Google Play Store y Apple App Store).
+    *   Emulador de Android: Presiona la tecla a en la terminal para desplegar la app en un emulador activo de Android.
+    *   Simulador de iOS: Presiona la tecla i en la terminal para desplegar la app en un simulador activo de iOS.

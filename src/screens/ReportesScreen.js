@@ -1,21 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 import { useTema } from '../context/TemaContext';
 import CategoriaBar from '../components/CategoriaBar';
+import { exportarReportePDF } from '../services/pdfServicio';
 import { obtenerEstilosGlobales } from '../styles/globales';
 import { reportesEstilos } from '../styles/ReportesScreenEstilos';
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
 
+const transaccionesIniciales = [
+  { id: '1', nombre: 'Almuerzo Ejecutivo', monto: -32.5, categoria: 'comida', fecha: 'Hoy, 14:30' },
+  { id: '2', nombre: 'Cafetería Central', monto: -4.2, categoria: 'comida', fecha: 'Hoy, 09:11' },
+  { id: '3', nombre: 'Uber Viaje', monto: -15.0, categoria: 'transporte', fecha: 'Ayer, 19:41' },
+];
+
+const metasIniciales = [
+  { id: '1', nombre: 'Viaje a Japón', montoActual: 4500, montoObjetivo: 8500, fechaLimite: 'Dic 2026', estado: 'En progreso' },
+  { id: '2', nombre: 'Enganche Casa', montoActual: 12000, montoObjetivo: 60000, fechaLimite: 'Mar 2027', estado: 'En progreso' },
+  { id: '3', nombre: 'Nueva MacBook', montoActual: 2800, montoObjetivo: 3400, fechaLimite: 'Jul 2026', estado: 'Casi listo' },
+];
+
+/**
+ * Pantalla de Reportes Estadísticos.
+ * Muestra el progreso de ahorro mensual, un desglose gráfico por columnas,
+ * la distribución de gastos por categoría y permite exportar el reporte en PDF.
+ */
 const ReportesScreen = () => {
   const { colores, t } = useTema();
   const [mesSeleccionado, setMesSeleccionado] = useState('May');
+  const [exportando, setExportando] = useState(false);
 
   const estilosComunes = obtenerEstilosGlobales(colores);
   const estilos = reportesEstilos(colores);
 
   const mesesTraducidos = t('meses');
-  const indiceSeleccionado = MESES.indexOf(mesSeleccionado);
 
   const categorias = [
     { id: '1', icono: 'home-outline', nombre: t('hogar'), subcategorias: t('hipotecasServicios'), monto: 2100, porcentaje: 45 },
@@ -23,13 +43,50 @@ const ReportesScreen = () => {
     { id: '3', icono: 'car-outline', nombre: t('transporte'), subcategorias: t('gasolinaPeajes'), monto: 320, porcentaje: 8 },
   ];
 
+  /**
+   * Obtiene la información financiera del dispositivo de forma asíncrona,
+   * y llama al servicio de exportación PDF mostrando un indicador de carga.
+   */
+  const gestionarExportacionPDF = async () => {
+    try {
+      setExportando(true);
+      const guardadasTransacciones = await AsyncStorage.getItem('finanzaap_transacciones');
+      const guardadasMetas = await AsyncStorage.getItem('finanzaap_metas');
+
+      const transacciones = guardadasTransacciones ? JSON.parse(guardadasTransacciones) : transaccionesIniciales;
+      const metas = guardadasMetas ? JSON.parse(guardadasMetas) : metasIniciales;
+
+      await exportarReportePDF(transacciones, metas, colores);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo generar el reporte en PDF.');
+    } finally {
+      setExportando(false);
+    }
+  };
+
   return (
     <ScrollView
       style={estilosComunes.fondoPrincipal}
       contentContainerStyle={estilosComunes.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <View style={[estilos.selectorMes, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde }]}>
+      <View style={estilosComunes.cabecera}>
+        <View style={{ width: 30 }} />
+        <Text style={estilosComunes.titulo}>Reportes</Text>
+        <TouchableOpacity 
+          onPress={gestionarExportacionPDF} 
+          style={estilosComunes.botonVolver}
+          disabled={exportando}
+        >
+          {exportando ? (
+            <ActivityIndicator size="small" color={colores.accentVerde} />
+          ) : (
+            <Ionicons name="download-outline" size={22} color={colores.textoPrimario} />
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <View style={[estilos.selectorMes, { backgroundColor: colores.fondoTarjeta, borderColor: colores.borde, marginTop: 16 }]}>
         {MESES.map((mes, index) => (
           <TouchableOpacity
             key={mes}
