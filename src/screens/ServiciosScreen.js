@@ -314,7 +314,11 @@ const ServiciosScreen = () => {
   }
 
   return (
-    <>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: colores.fondoPrimario }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+    >
       <ScrollView
         style={estilosComunes.fondoPrincipal}
         contentContainerStyle={estilosComunes.scroll}
@@ -554,7 +558,7 @@ const ServiciosScreen = () => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
